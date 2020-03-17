@@ -1,0 +1,78 @@
+package main
+
+import (
+	"math/rand"
+	"time"
+
+	"github.com/faiface/pixel"
+	"github.com/faiface/pixel/pixelgl"
+	"github.com/mttchpmn07/CustomECS/ecs"
+	"github.com/mttchpmn07/CustomECS/systems"
+	"golang.org/x/image/colornames"
+)
+
+func run() {
+	cfg := pixelgl.WindowConfig{
+		Title:  "Sprite Render Test",
+		Bounds: pixel.R(0, 0, 1024, 768),
+		VSync:  true,
+	}
+	win, err := pixelgl.NewWindow(cfg)
+	if err != nil {
+		panic(err)
+	}
+	win.SetSmooth(true)
+
+	hikingGopher, err := ecs.NewEntity()
+	if err != nil {
+		panic(err)
+	}
+	loc := systems.NewLocation(500, 500)
+	hikingGopher.Add(loc)
+	sRender, err := systems.NewSpriteRender("assets/hiking.png", loc)
+	if err != nil {
+		panic(err)
+	}
+	hikingGopher.Add(sRender)
+
+	last := time.Now()
+	elapsed := 0.0
+	angle := 0.0
+	totalTime := 0.0
+	rand.Seed(last.UnixNano())
+	for !win.Closed() {
+		dt := time.Since(last).Seconds()
+		last = time.Now()
+
+		angle += 3 * dt
+
+		elapsed += dt
+		if elapsed > 3 {
+			totalTime += elapsed
+			if totalTime >= 15 {
+				break
+			}
+			elapsed = 0
+			location, err := systems.GetLocation(hikingGopher)
+			if err != nil {
+				panic(err)
+			}
+			location.Loc = pixel.V(rand.Float64()*1024, rand.Float64()*768)
+		}
+
+		win.Clear(colornames.Whitesmoke)
+
+		sr, err := systems.GetSpriteRender(hikingGopher)
+		if err != nil {
+			panic(err)
+		}
+		sr.Transformation = sr.Transformation.Rotated(pixel.ZV, angle)
+		sr.Draw(win)
+
+		win.Update()
+	}
+}
+
+func main() {
+	pixelgl.Run(run)
+}
