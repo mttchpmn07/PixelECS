@@ -7,16 +7,17 @@ import (
 )
 
 const (
-	LTAG = "Location"
+	// LTAG const to hold the Location tag
+	LTAG = "location"
 )
 
-// Location
+// Location implements the component interface for a location system
 type Location struct {
 	tag string
 	Loc pixel.Vec
 }
 
-// NewLocation
+// NewLocation returns a new location component with a given starting x and y
 func NewLocation(x, y float64) Component {
 	return &Location{
 		tag: LTAG,
@@ -24,7 +25,7 @@ func NewLocation(x, y float64) Component {
 	}
 }
 
-// GetLocation
+// GetLocation returns the actual Location struct implmenting the component for a given entity
 func GetLocation(e *Entity) (*Location, error) {
 	comp, err := e.Query(LTAG)
 	if err != nil {
@@ -33,11 +34,11 @@ func GetLocation(e *Entity) (*Location, error) {
 	return comp.(*Location), nil
 }
 
-func (l *Location) String() string {
-	return fmt.Sprintf("%v", l.tag)
-}
-
-// Tag
+// Tag returns the tag for this component
 func (l *Location) Tag() string {
 	return l.tag
+}
+
+func (l *Location) String() string {
+	return fmt.Sprintf("%v", l.tag)
 }

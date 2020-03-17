@@ -4,7 +4,7 @@ import (
 	"github.com/google/uuid"
 )
 
-// Component
+// Component blank component interface (this is where data should live)
 type Component interface {
 	String() string
 	Tag() string

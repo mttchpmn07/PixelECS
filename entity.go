@@ -6,21 +6,7 @@ import (
 	"github.com/google/uuid"
 )
 
-/// just make a struct screw the interface
-
-/*
-// Entity
-type Entity interface {
-	Query(tag string) (Component, error)
-	Add(comp Component) error
-	Remove(comp Component) error
-	GetID() uuid.UUID
-	Delete()
-	String() string
-}
-*/
-
-// Entity
+// Entity basic entity struct (litterally just an id to find components with)
 type Entity struct {
 	ID uuid.UUID
 }
@@ -46,6 +32,7 @@ func NewEntity() (*Entity, error) {
 	}, nil
 }
 
+// Query queries the components map for a specifified component for this entity
 func (e *Entity) Query(tag string) (Component, error) {
 	for _, comp := range components[e.ID] {
 		if (*comp).Tag() == tag {
@@ -55,6 +42,7 @@ func (e *Entity) Query(tag string) (Component, error) {
 	return nil, fmt.Errorf("component %v not attached to entity %v", tag, e)
 }
 
+// Add adds component to an entity in the components map
 func (e *Entity) Add(c Component) error {
 	for _, comp := range components[e.ID] {
 		if c == (*comp) {
@@ -65,6 +53,7 @@ func (e *Entity) Add(c Component) error {
 	return nil
 }
 
+// Remove removes a component from an entity in the components map
 func (e *Entity) Remove(c Component) error {
 	var idx int = -1
 	for i, comp := range components[e.ID] {
@@ -82,10 +71,12 @@ func (e *Entity) Remove(c Component) error {
 	return nil
 }
 
+// GetID returns the entity uuid
 func (e *Entity) GetID() uuid.UUID {
 	return e.ID
 }
 
+// Delete removes and entity completly from the components map
 func (e *Entity) Delete() {
 	delete(components, e.ID)
 }

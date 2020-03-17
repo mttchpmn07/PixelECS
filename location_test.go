@@ -21,7 +21,7 @@ func TestLocation(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 
-	location.Loc = location.Loc.Add(pixel.Vec{10, 10})
+	location.Loc = location.Loc.Add(pixel.V(10, 10))
 	if location.Loc != pixel.V(10, 110) {
 		t.Errorf("Location did not add correctly")
 	}
