@@ -16,7 +16,7 @@ type Health struct {
 	Max   float64
 }
 
-// NewHealth returns a new health component with a provided current and max health
+// NewHealth returns a new health component with a given current and max health
 func NewHealth(value, max float64) Component {
 	return &Health{
 		tag:   HTAG,
