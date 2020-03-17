@@ -1,4 +1,4 @@
-package ecs
+package pixelecs
 
 import (
 	"github.com/google/uuid"

@@ -1,4 +1,4 @@
-package ecs
+package pixelecs
 
 import (
 	"fmt"

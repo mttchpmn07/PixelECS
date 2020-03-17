@@ -1,4 +1,4 @@
-package systems
+package pixelecs
 
 import (
 	"fmt"
@@ -9,7 +9,6 @@ import (
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	"github.com/mttchpmn07/CustomECS/ecs"
 )
 
 func loadPicture(path string) (pixel.Picture, error) {
@@ -37,7 +36,7 @@ type SpriteRender struct {
 	sprite         *pixel.Sprite
 	location       *Location
 	Transformation pixel.Matrix
-	Bounds pixel.Rect
+	Bounds         pixel.Rect
 }
 
 var spriteRenders []*SpriteRender
@@ -47,7 +46,7 @@ func init() {
 }
 
 // NewSpriteRender
-func NewSpriteRender(filename string, active bool, location ecs.Component) (ecs.Component, error) {
+func NewSpriteRender(filename string, active bool, location Component) (Component, error) {
 	loc := location.(*Location)
 	r := &SpriteRender{
 		tag:            SRTAG,
@@ -66,7 +65,7 @@ func NewSpriteRender(filename string, active bool, location ecs.Component) (ecs.
 }
 
 // GetSpriteRender
-func GetSpriteRender(e *ecs.Entity) (*SpriteRender, error) {
+func GetSpriteRender(e *Entity) (*SpriteRender, error) {
 	comp, err := e.Query(SRTAG)
 	if err != nil {
 		return nil, err

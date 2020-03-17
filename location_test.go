@@ -1,14 +1,13 @@
-package systems
+package pixelecs
 
 import (
 	"testing"
 
 	"github.com/faiface/pixel"
-	"github.com/mttchpmn07/CustomECS/ecs"
 )
 
 func TestLocation(t *testing.T) {
-	basicEntity, err := ecs.NewEntity()
+	basicEntity, err := NewEntity()
 	if err != nil {
 		t.Errorf(err.Error())
 	}

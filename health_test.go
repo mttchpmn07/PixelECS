@@ -1,13 +1,11 @@
-package systems
+package pixelecs
 
 import (
 	"testing"
-
-	"github.com/mttchpmn07/CustomECS/ecs"
 )
 
 func TestHealth(t *testing.T) {
-	basicEntity, err := ecs.NewEntity()
+	basicEntity, err := NewEntity()
 	if err != nil {
 		panic(err)
 	}

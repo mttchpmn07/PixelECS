@@ -1,9 +1,7 @@
-package systems
+package pixelecs
 
 import (
 	"fmt"
-
-	"github.com/mttchpmn07/CustomECS/ecs"
 )
 
 const (
@@ -17,7 +15,7 @@ type Health struct {
 }
 
 // NewHealth
-func NewHealth(value, max float64) ecs.Component {
+func NewHealth(value, max float64) Component {
 	return &Health{
 		tag:   HTAG,
 		Value: value,
@@ -26,7 +24,7 @@ func NewHealth(value, max float64) ecs.Component {
 }
 
 // GetHealth
-func GetHealth(e *ecs.Entity) (*Health, error) {
+func GetHealth(e *Entity) (*Health, error) {
 	comp, err := e.Query(HTAG)
 	if err != nil {
 		return nil, err

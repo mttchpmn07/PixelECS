@@ -1,10 +1,9 @@
-package systems
+package pixelecs
 
 import (
 	"fmt"
 
 	"github.com/faiface/pixel"
-	"github.com/mttchpmn07/CustomECS/ecs"
 )
 
 const (
@@ -18,7 +17,7 @@ type Location struct {
 }
 
 // NewLocation
-func NewLocation(x, y float64) ecs.Component {
+func NewLocation(x, y float64) Component {
 	return &Location{
 		tag: LTAG,
 		Loc: pixel.V(x, y),
@@ -26,7 +25,7 @@ func NewLocation(x, y float64) ecs.Component {
 }
 
 // GetLocation
-func GetLocation(e *ecs.Entity) (*Location, error) {
+func GetLocation(e *Entity) (*Location, error) {
 	comp, err := e.Query(LTAG)
 	if err != nil {
 		return nil, err
