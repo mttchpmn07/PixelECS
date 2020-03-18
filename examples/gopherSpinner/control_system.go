@@ -1,20 +1,22 @@
-package pixelecs
+package main
 
 import (
 	"github.com/faiface/pixel/pixelgl"
+
+	ecs "github.com/mttchpmn07/pixelecs/core"
 )
 
 // ControlSystem
 type ControlSystem struct {
-	controlEntities []*Entity
+	controlEntities []*ecs.Entity
 
 	userVelocity float64
 }
 
 // NewControlSystem
-func NewControlSystem(velocity float64, es ...*Entity) System {
+func NewControlSystem(velocity float64, es ...*ecs.Entity) ecs.System {
 	cSystem := &ControlSystem{
-		controlEntities: []*Entity{},
+		controlEntities: []*ecs.Entity{},
 		userVelocity:    velocity,
 	}
 	cSystem.AddEntity(es...)
@@ -69,7 +71,7 @@ func (cs *ControlSystem) Render(win *pixelgl.Window, dt float64) error {
 }
 
 // AddEntity
-func (cs *ControlSystem) AddEntity(es ...*Entity) error {
+func (cs *ControlSystem) AddEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
 		cs.controlEntities = append(cs.controlEntities, e)
 	}
@@ -77,9 +79,9 @@ func (cs *ControlSystem) AddEntity(es ...*Entity) error {
 }
 
 // RemoveEntity
-func (cs *ControlSystem) RemoveEntity(es ...*Entity) error {
+func (cs *ControlSystem) RemoveEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
-		newEntries, err := removeEntity(cs.controlEntities, e)
+		newEntries, err := ecs.StripEntity(cs.controlEntities, e)
 		if err != nil {
 			return err
 		}

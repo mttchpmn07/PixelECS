@@ -1,7 +1,9 @@
-package pixelecs
+package main
 
 import (
 	"fmt"
+
+	ecs "github.com/mttchpmn07/pixelecs/core"
 )
 
 const (
@@ -17,7 +19,7 @@ type Health struct {
 }
 
 // NewHealth returns a new health component with a given current and max health
-func NewHealth(value, max float64) Component {
+func NewHealth(value, max float64) ecs.Component {
 	return &Health{
 		tag:   HTAG,
 		Value: value,
@@ -26,7 +28,7 @@ func NewHealth(value, max float64) Component {
 }
 
 // GetHealth returns the actual Health struct implemnting the component for a given entity
-func GetHealth(e *Entity) (*Health, error) {
+func GetHealth(e *ecs.Entity) (*Health, error) {
 	comp, err := e.Query(HTAG)
 	if err != nil {
 		return nil, err

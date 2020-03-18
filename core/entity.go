@@ -1,4 +1,4 @@
-package pixelecs
+package core
 
 import (
 	"fmt"

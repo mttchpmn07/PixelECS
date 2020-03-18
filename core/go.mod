@@ -1,4 +1,4 @@
-module github.com/mttchpmn07/PixelECS
+module github.com/mttchpmn07/PixelECS/core
 
 go 1.14
 
@@ -11,5 +11,4 @@ require (
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a // indirect
 	github.com/google/uuid v1.1.1
 	github.com/pkg/errors v0.9.1 // indirect
-	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 )

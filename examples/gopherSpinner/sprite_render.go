@@ -1,4 +1,4 @@
-package pixelecs
+package main
 
 import (
 	"fmt"
@@ -10,6 +10,7 @@ import (
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
+	ecs "github.com/mttchpmn07/pixelecs/core"
 )
 
 func loadPicture(path string) (pixel.Picture, error) {
@@ -49,7 +50,7 @@ func init() {
 }
 
 // NewSpriteRender returns a new SpriteRender component with a sprite given via filename, an active flag, and a pointer to the associated location
-func NewSpriteRender(filename string, active bool, location Component) (Component, error) {
+func NewSpriteRender(filename string, active bool, location ecs.Component) (ecs.Component, error) {
 	loc := location.(*Location)
 	r := &SpriteRender{
 		tag:            SRTAG,
@@ -68,7 +69,7 @@ func NewSpriteRender(filename string, active bool, location Component) (Componen
 }
 
 // GetSpriteRender returns the actual SpriteRender struct implemnting the component for a given entity
-func GetSpriteRender(e *Entity) (*SpriteRender, error) {
+func GetSpriteRender(e *ecs.Entity) (*SpriteRender, error) {
 	comp, err := e.Query(SRTAG)
 	if err != nil {
 		return nil, err

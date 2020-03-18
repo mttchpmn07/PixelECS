@@ -1,19 +1,21 @@
-package pixelecs
+package main
 
 import (
 	"testing"
+
+	ecs "github.com/mttchpmn07/pixelecs/core"
 )
 
 func TestHealth(t *testing.T) {
-	basicEntity, err := NewEntity()
+	basicEntity, err := ecs.NewEntity()
 	if err != nil {
 		panic(err)
 	}
 
-	healthComponent := NewHealth(0, 100)
+	healthComponent := ecs.NewHealth(0, 100)
 	basicEntity.Add(healthComponent)
 
-	health, err := GetHealth(basicEntity)
+	health, err := ecs.GetHealth(basicEntity)
 	if err != nil {
 		t.Errorf("failed to get health from entity: %v", err.Error())
 	}
@@ -35,7 +37,7 @@ func TestHealth(t *testing.T) {
 	}
 	health.Increase(75)
 
-	health, err = GetHealth(basicEntity)
+	health, err = ecs.GetHealth(basicEntity)
 	if err != nil {
 		t.Errorf("failed to get health from entity: %v", err.Error())
 	}

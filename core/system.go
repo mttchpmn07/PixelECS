@@ -1,4 +1,4 @@
-package pixelecs
+package core
 
 import (
 	"fmt"
@@ -14,7 +14,7 @@ type System interface {
 	RemoveEntity(es ...*Entity) error
 }
 
-func removeEntity(ce []*Entity, e *Entity) ([]*Entity, error) {
+func StripEntity(ce []*Entity, e *Entity) ([]*Entity, error) {
 	idx := -1
 	for i, ent := range ce {
 		if ent == e {
