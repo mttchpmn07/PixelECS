@@ -6,7 +6,7 @@ import (
 	"github.com/faiface/pixel/pixelgl"
 )
 
-// System
+// System comment here
 type System interface {
 	Update(win *pixelgl.Window, dt float64) error
 	Render(win *pixelgl.Window, dt float64) error
