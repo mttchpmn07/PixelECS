@@ -44,21 +44,30 @@ func run() {
 			panic(err)
 		}
 		loc := NewLocation(500, 500)
-		gopher.Add(loc)
+		err = gopher.Add(loc)
+		if err != nil {
+			panic(err)
+		}
 		if i == 0 {
 			sr, err := NewSpriteRender(asset, true, loc)
 			if err != nil {
 				fmt.Println(asset)
 				panic(err)
 			}
-			gopher.Add(sr)
+			err = gopher.Add(sr)
+			if err != nil {
+				panic(err)
+			}
 		} else {
 			sr, err := NewSpriteRender(asset, false, loc)
 			if err != nil {
 				fmt.Println(asset)
 				panic(err)
 			}
-			gopher.Add(sr)
+			err = gopher.Add(sr)
+			if err != nil {
+				panic(err)
+			}
 		}
 		gophers = append(gophers, gopher)
 	}
@@ -71,14 +80,20 @@ func run() {
 	frames := 0
 	second := time.Tick(time.Second)
 
-	controlSystem := NewControlSystem(300.0, gophers...)
+	controlSystem, err := NewControlSystem(300.0, gophers...)
+	if err != nil {
+		panic(err)
+	}
 
 	rand.Seed(last.UnixNano())
 	for !win.Closed() {
 		dt := time.Since(last).Seconds()
 		last = time.Now()
 
-		controlSystem.Update(win, dt)
+		err = controlSystem.Update(win, dt)
+		if err != nil {
+			panic(err)
+		}
 
 		angle += angleVel * dt
 		elapsed += dt

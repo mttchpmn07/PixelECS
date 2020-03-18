@@ -14,13 +14,16 @@ type ControlSystem struct {
 }
 
 // NewControlSystem
-func NewControlSystem(velocity float64, es ...*ecs.Entity) ecs.System {
+func NewControlSystem(velocity float64, es ...*ecs.Entity) (ecs.System, error) {
 	cSystem := &ControlSystem{
 		controlEntities: []*ecs.Entity{},
 		userVelocity:    velocity,
 	}
-	cSystem.AddEntity(es...)
-	return cSystem
+	err := cSystem.AddEntity(es...)
+	if err != nil {
+		return nil, err
+	}
+	return cSystem, nil
 }
 
 // Update
@@ -72,9 +75,7 @@ func (cs *ControlSystem) Render(win *pixelgl.Window, dt float64) error {
 
 // AddEntity
 func (cs *ControlSystem) AddEntity(es ...*ecs.Entity) error {
-	for _, e := range es {
-		cs.controlEntities = append(cs.controlEntities, e)
-	}
+	cs.controlEntities = append(cs.controlEntities, es...)
 	return nil
 }
 
