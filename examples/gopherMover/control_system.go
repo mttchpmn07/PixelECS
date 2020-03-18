@@ -3,7 +3,7 @@ package main
 import (
 	"github.com/faiface/pixel/pixelgl"
 
-	ecs "github.com/mttchpmn07/pixelecs/core"
+	ecs "github.com/mttchpmn07/PixelECS/core"
 )
 
 // ControlSystem

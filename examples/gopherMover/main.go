@@ -7,7 +7,7 @@ import (
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	ecs "github.com/mttchpmn07/pixelecs/core"
+	ecs "github.com/mttchpmn07/PixelECS/core"
 	"golang.org/x/image/colornames"
 )
 

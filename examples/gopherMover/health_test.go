@@ -3,7 +3,7 @@ package main
 import (
 	"testing"
 
-	ecs "github.com/mttchpmn07/pixelecs/core"
+	ecs "github.com/mttchpmn07/PixelECS/core"
 )
 
 func TestHealth(t *testing.T) {
@@ -12,10 +12,10 @@ func TestHealth(t *testing.T) {
 		panic(err)
 	}
 
-	healthComponent := ecs.NewHealth(0, 100)
+	healthComponent := NewHealth(0, 100)
 	basicEntity.Add(healthComponent)
 
-	health, err := ecs.GetHealth(basicEntity)
+	health, err := GetHealth(basicEntity)
 	if err != nil {
 		t.Errorf("failed to get health from entity: %v", err.Error())
 	}
@@ -37,7 +37,7 @@ func TestHealth(t *testing.T) {
 	}
 	health.Increase(75)
 
-	health, err = ecs.GetHealth(basicEntity)
+	health, err = GetHealth(basicEntity)
 	if err != nil {
 		t.Errorf("failed to get health from entity: %v", err.Error())
 	}

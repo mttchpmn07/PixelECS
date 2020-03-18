@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/faiface/pixel"
-	ecs "github.com/mttchpmn07/pixelecs/core"
+	ecs "github.com/mttchpmn07/PixelECS/core"
 )
 
 func TestLocation(t *testing.T) {
@@ -12,9 +12,9 @@ func TestLocation(t *testing.T) {
 	if err != nil {
 		t.Errorf(err.Error())
 	}
-	locationComponent := ecs.NewLocation(0, 100)
+	locationComponent := NewLocation(0, 100)
 	basicEntity.Add(locationComponent)
-	location, err := ecs.GetLocation(basicEntity)
+	location, err := GetLocation(basicEntity)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
@@ -29,7 +29,7 @@ func TestLocation(t *testing.T) {
 
 	location.Loc = pixel.V(500, 500)
 
-	location, err = ecs.GetLocation(basicEntity)
+	location, err = GetLocation(basicEntity)
 	if err != nil {
 		t.Errorf(err.Error())
 	}
