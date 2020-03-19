@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/faiface/pixel"
-	ecs "github.com/mttchpmn07/pixelecs/core"
+	ecs "github.com/mttchpmn07/PixelECS/core"
 )
 
 const (

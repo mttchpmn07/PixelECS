@@ -7,7 +7,7 @@ import (
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
-	pixelecs "github.com/mttchpmn07/PixelECS"
+	ecs "github.com/mttchpmn07/PixelECS/core"
 	"golang.org/x/image/colornames"
 )
 
@@ -28,7 +28,7 @@ func run() {
 	}
 	win.SetSmooth(true)
 
-	gophers := []*pixelecs.Entity{}
+	gophers := []*ecs.Entity{}
 	gopherAssets := []string{
 		"assets/hiking.png",
 		"assets/party.png",
@@ -39,13 +39,13 @@ func run() {
 	}
 
 	for _, asset := range gopherAssets {
-		gopher, err := pixelecs.NewEntity()
+		gopher, err := ecs.NewEntity()
 		if err != nil {
 			panic(err)
 		}
-		loc := pixelecs.NewLocation(500, 500)
+		loc := NewLocation(500, 500)
 		gopher.Add(loc)
-		sr, err := pixelecs.NewSpriteRender(asset, false, loc)
+		sr, err := NewSpriteRender(asset, false, loc)
 		if err != nil {
 			fmt.Println(asset)
 			panic(err)
@@ -74,13 +74,13 @@ func run() {
 			elapsed = 0
 			angleVel *= -1.0
 			for i, gopher := range gophers {
-				location, err := pixelecs.GetLocation(gopher)
+				location, err := GetLocation(gopher)
 				if err != nil {
 					panic(err)
 				}
 				location.Loc = pixel.V(rand.Float64()*WIDTH, rand.Float64()*HEIGHT)
 
-				render, err := pixelecs.GetSpriteRender(gopher)
+				render, err := GetSpriteRender(gopher)
 				if err != nil {
 					panic(err)
 				}
@@ -97,7 +97,7 @@ func run() {
 		}
 
 		for _, gopher := range gophers {
-			render, err := pixelecs.GetSpriteRender(gopher)
+			render, err := GetSpriteRender(gopher)
 			if err != nil {
 				panic(err)
 			}
@@ -105,7 +105,7 @@ func run() {
 		}
 
 		win.Clear(colornames.Whitesmoke)
-		pixelecs.DrawSprites(win)
+		DrawSprites(win)
 		win.Update()
 
 		frames++

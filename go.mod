@@ -10,6 +10,7 @@ require (
 	github.com/go-gl/glfw v0.0.0-20200222043503-6f7a984d4dc4 // indirect
 	github.com/go-gl/mathgl v0.0.0-20190713194549-592312d8590a // indirect
 	github.com/google/uuid v1.1.1
+	github.com/mttchpmn07/PixelECS/core v0.0.0-20200319040856-f43ab72144d2
 	github.com/pkg/errors v0.9.1 // indirect
 	golang.org/x/image v0.0.0-20200119044424-58c23975cae1
 )
