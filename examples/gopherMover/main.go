@@ -8,6 +8,8 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	ecs "github.com/mttchpmn07/PixelECS/core"
+	"github.com/mttchpmn07/PixelECS/gopherMover/components"
+	"github.com/mttchpmn07/PixelECS/gopherMover/systems"
 	"golang.org/x/image/colornames"
 )
 
@@ -25,13 +27,13 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 			panic(err)
 		}
 
-		loc := NewCLocation(500, 500)
+		loc := components.NewCLocation(500, 500)
 		err = gopher.Add(loc)
 		if err != nil {
 			panic(err)
 		}
 
-		kin := NewCKenetics(300, 3)
+		kin := components.NewCKenetics(300, 3)
 		err = gopher.Add(kin)
 		if err != nil {
 			panic(err)
@@ -43,7 +45,7 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 		} else {
 			active = false
 		}
-		sr, err := NewCSprite(asset, active)
+		sr, err := components.NewCSprite(asset, active)
 		if err != nil {
 			fmt.Println(asset)
 			panic(err)
@@ -53,12 +55,12 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 			panic(err)
 		}
 
-		sp := NewCSpriteProperties(0, 1, sr)
+		sp := components.NewCSpriteProperties(0, 1, sr)
 		err = gopher.Add(sp)
 		if err != nil {
 			panic(err)
 		}
-		sprop, _ := GetCSpriteProperties(gopher)
+		sprop, _ := components.GetCSpriteProperties(gopher)
 		sprop.Scale = 150 / sprop.Frame.W()
 
 		gophers = append(gophers, gopher)
@@ -88,12 +90,12 @@ func run() {
 	}
 	gophers := createGophers(gopherAssets)
 
-	controlSystem, err := NewSKeyboardController(gophers...)
+	controlSystem, err := systems.NewSKeyboardController(gophers...)
 	if err != nil {
 		panic(err)
 	}
 
-	renderSystem, err := NewSRenderer(gophers...)
+	renderSystem, err := systems.NewSRenderer(gophers...)
 	if err != nil {
 		panic(err)
 	}

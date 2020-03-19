@@ -1,4 +1,4 @@
-package main
+package components
 
 import (
 	"fmt"
@@ -27,7 +27,7 @@ func NewCSpriteProperties(angle, scale float64, sr ecs.Component) ecs.Component 
 		tag:   SPTAG,
 		Angle: angle,
 		Scale: scale,
-		Frame: r.sprite.Frame(),
+		Frame: r.Sprite.Frame(),
 	}
 }
 

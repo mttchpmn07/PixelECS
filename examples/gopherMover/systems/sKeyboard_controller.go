@@ -1,9 +1,10 @@
-package main
+package systems
 
 import (
 	"github.com/faiface/pixel/pixelgl"
 
 	ecs "github.com/mttchpmn07/PixelECS/core"
+	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
 
 // SKeyboardController Keyboard Control system
@@ -26,15 +27,15 @@ func NewSKeyboardController(es ...*ecs.Entity) (ecs.System, error) {
 // Update calculates next state for all components used by the system for each of its associated entities
 func (cs *SKeyboardController) Update(win *pixelgl.Window, dt float64) error {
 	for _, e := range cs.controlEntities {
-		loc, err := GetCLocation(e)
+		loc, err := components.GetCLocation(e)
 		if err != nil {
 			return err
 		}
-		kin, err := GetCKenetics(e)
+		kin, err := components.GetCKenetics(e)
 		if err != nil {
 			return err
 		}
-		sp, err := GetCSpriteProperties(e)
+		sp, err := components.GetCSpriteProperties(e)
 		if err != nil {
 			return err
 		}

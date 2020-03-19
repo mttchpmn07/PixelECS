@@ -1,10 +1,11 @@
-package main
+package systems
 
 import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 
 	ecs "github.com/mttchpmn07/PixelECS/core"
+	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
 
 // SRenderer Sprite Render System
@@ -27,23 +28,23 @@ func NewSRenderer(es ...*ecs.Entity) (ecs.System, error) {
 // Update draws sprite for each associated entity
 func (rs *SRenderer) Update(win *pixelgl.Window, dt float64) error {
 	for _, e := range rs.controlEntities {
-		sr, err := GetCSprite(e)
+		sr, err := components.GetCSprite(e)
 		if err != nil {
 			return err
 		}
 		if !sr.Active {
 			continue
 		}
-		loc, err := GetCLocation(e)
+		loc, err := components.GetCLocation(e)
 		if err != nil {
 			return err
 		}
-		sp, err := GetCSpriteProperties(e)
+		sp, err := components.GetCSpriteProperties(e)
 		if err != nil {
 			return err
 		}
 		trans := pixel.IM.Scaled(pixel.ZV, sp.Scale).Rotated(pixel.ZV, sp.Angle)
-		sr.sprite.Draw(win, trans.Moved(loc.Loc))
+		sr.Sprite.Draw(win, trans.Moved(loc.Loc))
 	}
 	return nil
 }

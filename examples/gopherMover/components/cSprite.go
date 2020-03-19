@@ -1,4 +1,4 @@
-package main
+package components
 
 import (
 	"fmt"
@@ -35,7 +35,7 @@ type CSprite struct {
 	tag string
 
 	Active bool
-	sprite *pixel.Sprite
+	Sprite *pixel.Sprite
 }
 
 // NewCSprite returns a new CSprite component with a sprite given via filename, an active flag
@@ -48,7 +48,7 @@ func NewCSprite(filename string, active bool) (ecs.Component, error) {
 	if err != nil {
 		return nil, err
 	}
-	r.sprite = pixel.NewSprite(pic, pic.Bounds())
+	r.Sprite = pixel.NewSprite(pic, pic.Bounds())
 	return r, nil
 }
 
