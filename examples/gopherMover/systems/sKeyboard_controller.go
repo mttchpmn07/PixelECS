@@ -7,14 +7,22 @@ import (
 	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
 
+const (
+	// SKCTAG const to hold the SKeyboardController tag
+	SKCTAG = "keyboardcontroller"
+)
+
 // SKeyboardController Keyboard Control system
 type SKeyboardController struct {
+	tag string
+
 	controlEntities []*ecs.Entity
 }
 
 // NewSKeyboardController returns a new Keyboard Control System with all given entities attached
 func NewSKeyboardController(es ...*ecs.Entity) (ecs.System, error) {
 	cSystem := &SKeyboardController{
+		tag:             SKCTAG,
 		controlEntities: []*ecs.Entity{},
 	}
 	err := cSystem.AddEntity(es...)
@@ -25,7 +33,9 @@ func NewSKeyboardController(es ...*ecs.Entity) (ecs.System, error) {
 }
 
 // Update calculates next state for all components used by the system for each of its associated entities
-func (cs *SKeyboardController) Update(win *pixelgl.Window, dt float64) error {
+func (cs *SKeyboardController) Update(args ...interface{}) error {
+	win := args[0].(*pixelgl.Window)
+	dt := (*args[1].(*float64))
 	for _, e := range cs.controlEntities {
 		loc, err := components.GetCLocation(e)
 		if err != nil {
@@ -84,4 +94,9 @@ func (cs *SKeyboardController) RemoveEntity(es ...*ecs.Entity) error {
 		cs.controlEntities = newEntries
 	}
 	return nil
+}
+
+// Tag returns the tag for this system
+func (cs *SKeyboardController) Tag() string {
+	return cs.tag
 }

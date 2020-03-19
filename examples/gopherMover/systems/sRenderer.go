@@ -8,14 +8,22 @@ import (
 	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
 
+const (
+	// RTAG const to hold the SRenderer tag
+	RTAG = "renderer"
+)
+
 // SRenderer Sprite Render System
 type SRenderer struct {
+	tag string
+
 	controlEntities []*ecs.Entity
 }
 
 // NewSRenderer returns a new sprite render system with a give list of entities attached via a variadic function call
 func NewSRenderer(es ...*ecs.Entity) (ecs.System, error) {
 	cSystem := &SRenderer{
+		tag:             RTAG,
 		controlEntities: []*ecs.Entity{},
 	}
 	err := cSystem.AddEntity(es...)
@@ -26,7 +34,8 @@ func NewSRenderer(es ...*ecs.Entity) (ecs.System, error) {
 }
 
 // Update draws sprite for each associated entity
-func (rs *SRenderer) Update(win *pixelgl.Window, dt float64) error {
+func (rs *SRenderer) Update(args ...interface{}) error {
+	win := args[0].(*pixelgl.Window)
 	for _, e := range rs.controlEntities {
 		sr, err := components.GetCSprite(e)
 		if err != nil {
@@ -65,4 +74,9 @@ func (rs *SRenderer) RemoveEntity(es ...*ecs.Entity) error {
 		rs.controlEntities = newEntries
 	}
 	return nil
+}
+
+// Tag returns the tag for this system
+func (rs *SRenderer) Tag() string {
+	return rs.tag
 }
