@@ -12,8 +12,8 @@ import (
 )
 
 const (
-	WIDTH  = 800
-	HEIGHT = 600
+	width  = 800
+	height = 600
 )
 
 func createGophers(gopherAssets []string) []*ecs.Entity {
@@ -25,13 +25,13 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 			panic(err)
 		}
 
-		loc := NewLocation(500, 500)
+		loc := NewCLocation(500, 500)
 		err = gopher.Add(loc)
 		if err != nil {
 			panic(err)
 		}
 
-		kin := NewKenetics(300, 3)
+		kin := NewCKenetics(300, 3)
 		err = gopher.Add(kin)
 		if err != nil {
 			panic(err)
@@ -43,7 +43,7 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 		} else {
 			active = false
 		}
-		sr, err := NewSprite(asset, active)
+		sr, err := NewCSprite(asset, active)
 		if err != nil {
 			fmt.Println(asset)
 			panic(err)
@@ -53,12 +53,12 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 			panic(err)
 		}
 
-		sp := NewSpriteProperties(0, 1, sr)
+		sp := NewCSpriteProperties(0, 1, sr)
 		err = gopher.Add(sp)
 		if err != nil {
 			panic(err)
 		}
-		sprop, _ := GetSpriteProperties(gopher)
+		sprop, _ := GetCSpriteProperties(gopher)
 		sprop.Scale = 150 / sprop.Frame.W()
 
 		gophers = append(gophers, gopher)
@@ -69,7 +69,7 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 func run() {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Sprite Render Test",
-		Bounds: pixel.R(0, 0, WIDTH, HEIGHT),
+		Bounds: pixel.R(0, 0, width, height),
 		VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
@@ -88,33 +88,36 @@ func run() {
 	}
 	gophers := createGophers(gopherAssets)
 
-	last := time.Now()
+	controlSystem, err := NewSKeyboardController(gophers...)
+	if err != nil {
+		panic(err)
+	}
+
+	renderSystem, err := NewSRenderer(gophers...)
+	if err != nil {
+		panic(err)
+	}
+
+	systems := []ecs.System{
+		controlSystem,
+		renderSystem,
+	}
+
 	frames := 0
 	second := time.Tick(time.Second)
-
-	controlSystem, err := NewKeybaordControlSystem(gophers...)
-	if err != nil {
-		panic(err)
-	}
-
-	renderSystem, err := NewRendererSystem(gophers...)
-	if err != nil {
-		panic(err)
-	}
-
+	last := time.Now()
 	rand.Seed(last.UnixNano())
 	for !win.Closed() {
 		dt := time.Since(last).Seconds()
 		last = time.Now()
 
-		err = controlSystem.Update(win, dt)
-		if err != nil {
-			panic(err)
-		}
-
 		win.Clear(colornames.Skyblue)
-		//DrawSprites(win)
-		renderSystem.Render(win, dt)
+		for _, sys := range systems {
+			err := sys.Update(win, dt)
+			if err != nil {
+				panic(err)
+			}
+		}
 		win.Update()
 
 		frames++
