@@ -2,28 +2,10 @@ package components
 
 import (
 	"fmt"
-	"image"
-	"os"
-
-	// Needed to set a pixel.Picture from a png
-	_ "image/png"
 
 	"github.com/faiface/pixel"
 	ecs "github.com/mttchpmn07/PixelECS/core"
 )
-
-func loadPicture(path string) (pixel.Picture, error) {
-	file, err := os.Open(path)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-	img, _, err := image.Decode(file)
-	if err != nil {
-		return nil, err
-	}
-	return pixel.PictureDataFromImage(img), nil
-}
 
 const (
 	// SRTAG const to hold the sprite tag
@@ -34,15 +16,16 @@ const (
 type CSprite struct {
 	tag string
 
-	Active bool
-	Sprite *pixel.Sprite
+	Render     bool
+	Sprite     *pixel.Sprite
+	Properties *CProperties
 }
 
 // NewCSprite returns a new CSprite component with a sprite given via filename, an active flag
 func NewCSprite(filename string, active bool) (ecs.Component, error) {
 	r := &CSprite{
 		tag:    SRTAG,
-		Active: active,
+		Render: active,
 	}
 	pic, err := loadPicture(filename)
 	if err != nil {

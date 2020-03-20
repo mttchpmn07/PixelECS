@@ -41,14 +41,14 @@ func (rs *SRenderer) Update(args ...interface{}) error {
 		if err != nil {
 			return err
 		}
-		if !sr.Active {
+		if !sr.Render {
 			continue
 		}
 		loc, err := components.GetCLocation(e)
 		if err != nil {
 			return err
 		}
-		sp, err := components.GetCSpriteProperties(e)
+		sp, err := components.GetCProperties(e)
 		if err != nil {
 			return err
 		}

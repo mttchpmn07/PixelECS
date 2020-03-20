@@ -6,7 +6,7 @@ import (
 )
 
 // NewGopher creates a new gopher with a given sprite loaded from a png file and a starting x and y
-func NewGopher(asset string, x, y float64) (*ecs.Entity, error) {
+func NewGopher(asset string, x, y, width float64) (*ecs.Entity, error) {
 	gopher, err := ecs.NewEntity()
 	if err != nil {
 		return nil, err
@@ -32,14 +32,13 @@ func NewGopher(asset string, x, y float64) (*ecs.Entity, error) {
 	if err != nil {
 		return nil, err
 	}
+	spriteFrame := sr.(*components.CSprite).Sprite.Frame()
 
-	sp := components.NewCSpriteProperties(0, 1, sr)
-	err = gopher.Add(sp)
+	prop := components.NewCProperties(0, width/spriteFrame.W(), spriteFrame)
+	err = gopher.Add(prop)
 	if err != nil {
 		return nil, err
 	}
-	sprop, _ := components.GetCSpriteProperties(gopher)
-	sprop.Scale = 150 / sprop.Frame.W()
 
 	return gopher, nil
 }

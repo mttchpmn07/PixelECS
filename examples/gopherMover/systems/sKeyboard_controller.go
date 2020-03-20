@@ -45,7 +45,7 @@ func (cs *SKeyboardController) Update(args ...interface{}) error {
 		if err != nil {
 			return err
 		}
-		sp, err := components.GetCSpriteProperties(e)
+		sp, err := components.GetCProperties(e)
 		if err != nil {
 			return err
 		}
@@ -54,15 +54,12 @@ func (cs *SKeyboardController) Update(args ...interface{}) error {
 		}
 		if win.Pressed(pixelgl.KeyD) || win.Pressed(pixelgl.KeyRight) {
 			loc.Loc.X += kin.Speed * dt
-
 		}
 		if win.Pressed(pixelgl.KeyS) || win.Pressed(pixelgl.KeyDown) {
 			loc.Loc.Y -= kin.Speed * dt
-
 		}
 		if win.Pressed(pixelgl.KeyW) || win.Pressed(pixelgl.KeyUp) {
 			loc.Loc.Y += kin.Speed * dt
-
 		}
 		if win.Pressed(pixelgl.KeyE) {
 			sp.Angle -= kin.AngularVelocity * dt
