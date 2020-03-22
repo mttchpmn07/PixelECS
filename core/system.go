@@ -4,6 +4,9 @@ import (
 	"fmt"
 )
 
+// TODO: Space as the higher level context manager for systems etc...
+// maybe tie entitys to a space or keep them global???
+
 // System comment here
 type System interface {
 	Update(args ...interface{}) error

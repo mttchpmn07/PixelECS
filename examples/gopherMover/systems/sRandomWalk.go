@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	// SKCTAG const to hold the SRandomWalk tag
+	// SBMTAG const to hold the SRandomWalk tag
 	SBMTAG = "randomwalk"
 )
 

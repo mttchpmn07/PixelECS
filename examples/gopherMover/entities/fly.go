@@ -1,13 +1,15 @@
 package entities
 
 import (
+	"math/rand"
+
 	"github.com/faiface/pixel"
 	ecs "github.com/mttchpmn07/PixelECS/core"
 	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
 
-func buildAnimations() (ecs.Component, error) {
-	seq, err := components.NewSequence("assets/bug.png", 10, 105, 105, 0, true)
+func buildAnimations(asset *components.CBatchAsset) (ecs.Component, error) {
+	seq, err := components.NewSequence(asset, 10, 105, 105, 0, true)
 	if err != nil {
 		return nil, err
 	}
@@ -19,26 +21,44 @@ func buildAnimations() (ecs.Component, error) {
 	return an, nil
 }
 
+/*
+Going to create CBatchAsset before creating all the flys in main. Think of it like passing a single
+pointer to a picture. This will be assigned as a component to each on that matters. Then all
+rendering systems (renderer/animator) will just draw to the respective batch
+
+
+Only thing left is to draw each batch after updates.... might be worth creating a system for that
+(general render system????)
+*/
+
 // NewFly creates a new animated fly
-func NewFly(x, y, width float64) (*ecs.Entity, error) {
+func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAsset) (*ecs.Entity, error) {
 	fly, err := ecs.NewEntity()
 	if err != nil {
 		return nil, err
 	}
 
+	err = fly.Add(asset)
+	if err != nil {
+		return nil, err
+	}
+
+	x := winWidth * rand.Float64()
+	y := winHeight * rand.Float64()
 	loc := components.NewCLocation(x, y)
 	err = fly.Add(loc)
 	if err != nil {
 		return nil, err
 	}
 
-	kin := components.NewCKenetics(100, 10, 1000, pixel.V(0, 0), pixel.V(1, 1))
+	vel := pixel.V(rand.Float64()-0.5, rand.Float64()-0.5).Unit()
+	kin := components.NewCKenetics(100, 10, 1000, vel.Scaled(100), pixel.V(0, 0))
 	err = fly.Add(kin)
 	if err != nil {
 		return nil, err
 	}
 
-	an, err := buildAnimations()
+	an, err := buildAnimations(asset)
 	if err != nil {
 		return nil, err
 	}
@@ -47,8 +67,8 @@ func NewFly(x, y, width float64) (*ecs.Entity, error) {
 		return nil, err
 	}
 
-	bounds := an.(*components.CAnimation).GetCurrentSprite().Frame()
-	sp := components.NewCProperties(0, width/bounds.W(), bounds)
+	bounds := an.(*components.CAnimation).GetCurrentFrame()
+	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds)
 	err = fly.Add(sp)
 	if err != nil {
 		return nil, err

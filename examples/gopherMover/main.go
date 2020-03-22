@@ -2,12 +2,15 @@ package main
 
 import (
 	"fmt"
+	"image"
 	"math/rand"
+	"os"
 	"time"
 
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	ecs "github.com/mttchpmn07/PixelECS/core"
+	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 	"github.com/mttchpmn07/PixelECS/gopherMover/entities"
 	"github.com/mttchpmn07/PixelECS/gopherMover/systems"
 	"golang.org/x/image/colornames"
@@ -17,6 +20,19 @@ const (
 	width  = 800
 	height = 600
 )
+
+func loadPicture(path string) (pixel.Picture, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+	img, _, err := image.Decode(file)
+	if err != nil {
+		return nil, err
+	}
+	return pixel.PictureDataFromImage(img), nil
+}
 
 func createGophers(gopherAssets []string) []*ecs.Entity {
 	gophers := []*ecs.Entity{}
@@ -31,24 +47,24 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 	return gophers
 }
 
+func createFlys(num int) []*ecs.Entity {
+	flys := []*ecs.Entity{}
+	ba, err := components.NewCBatchAsset("assets/bug.png")
+	if err != nil {
+		panic(err)
+	}
+
+	for i := 1; i <= num; i++ {
+		fly, err := entities.NewFly(width, height, 25, ba.(*components.CBatchAsset))
+		if err != nil {
+			panic(err)
+		}
+		flys = append(flys, fly)
+	}
+	return flys
+}
+
 func buildSystems(gophers []*ecs.Entity, flys []*ecs.Entity) {
-	// Keyboard Control System
-	controlSystem, err := systems.NewSKeyboardController(gophers...)
-	if err != nil {
-		panic(err)
-	}
-	err = ecs.RegisterSystem(controlSystem)
-	if err != nil {
-		panic(err)
-	}
-
-	// Static Sprite Render System
-	renderSystem, err := systems.NewSRenderer(gophers...)
-	if err != nil {
-		panic(err)
-	}
-	ecs.RegisterSystem(renderSystem)
-
 	// Random Walk System
 	randoWalkSystem, err := systems.NewSRandomWalk(flys...)
 	if err != nil {
@@ -68,13 +84,40 @@ func buildSystems(gophers []*ecs.Entity, flys []*ecs.Entity) {
 	if err != nil {
 		panic(err)
 	}
+
+	// Batch renderer system
+	batchRendererSystem, err := systems.NewSBatchRenderer(flys...)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(batchRendererSystem)
+	if err != nil {
+		panic(err)
+	}
+
+	// Keyboard Control System
+	controlSystem, err := systems.NewSKeyboardController(gophers...)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(controlSystem)
+	if err != nil {
+		panic(err)
+	}
+
+	// Static Sprite Render System
+	renderSystem, err := systems.NewSRenderer(gophers...)
+	if err != nil {
+		panic(err)
+	}
+	ecs.RegisterSystem(renderSystem)
 }
 
 func buildWindow() (pixelgl.WindowConfig, *pixelgl.Window) {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Sprite Render Test",
 		Bounds: pixel.R(0, 0, width, height),
-		VSync:  true,
+		//VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
 	if err != nil {
@@ -113,15 +156,7 @@ func run() {
 		"assets/dragon.png",
 	}
 	gophers := createGophers(gopherAssets)
-	flys := []*ecs.Entity{}
-	for i := 0; i <= 1000; i++ {
-		fly, err := entities.NewFly(3*width/4, 3*height/4, 50)
-		if err != nil {
-			panic(err)
-		}
-		flys = append(flys, fly)
-	}
-	//gophers = append(gophers, fly)
+	flys := createFlys(1000)
 	buildSystems(gophers, flys)
 
 	frames := 0

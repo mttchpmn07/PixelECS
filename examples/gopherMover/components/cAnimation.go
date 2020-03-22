@@ -59,52 +59,46 @@ func (an *CAnimation) SetSequence(name string) {
 	an.LastFrameChange = time.Now()
 }
 
-// GetCurrentSprite returns the current sprite for the current sequence
-func (an *CAnimation) GetCurrentSprite() *pixel.Sprite {
-	return an.Sequences[an.Current].Sprite()
+// GetCurrentFrame returns the current sprite for the current sequence
+func (an *CAnimation) GetCurrentFrame() pixel.Rect {
+	return an.Sequences[an.Current].Frame()
 }
 
 // Sequence struct to hold a sequence in an animation
 type Sequence struct {
-	textures   []*pixel.Sprite
+	Frames     []pixel.Rect
 	frame      int
 	SampleRate float64
 	loop       bool
 }
 
 // NewSequence constructor for the sequence struct
-func NewSequence(filename string, sampleRate, width, height, padding float64, loop bool) (*Sequence, error) {
-	textures := []*pixel.Sprite{}
-	spritesheet, err := loadPicture(filename)
-	if err != nil {
-		panic(err)
-	}
-
+func NewSequence(asset *CBatchAsset, sampleRate, width, height, padding float64, loop bool) (*Sequence, error) {
 	var spriteFrames []pixel.Rect
-	for x := spritesheet.Bounds().Min.X; x < spritesheet.Bounds().Max.X; x += width + padding {
-		for y := spritesheet.Bounds().Min.Y; y < spritesheet.Bounds().Max.Y; y += height + padding {
-			frame := pixel.R(x, y, x+width, y+height)
-			textures = append(textures, pixel.NewSprite(spritesheet, frame))
+	max := pixel.V(asset.Spritesheet.Bounds().Max.X, asset.Spritesheet.Bounds().Max.Y)
+	min := pixel.V(asset.Spritesheet.Bounds().Min.X, asset.Spritesheet.Bounds().Min.Y)
+	for x := min.X; x < max.X; x += width + padding {
+		for y := min.Y; y < max.Y; y += height + padding {
 			spriteFrames = append(spriteFrames, pixel.R(x, y, x+width, y+height))
 		}
 	}
 
 	return &Sequence{
-		textures:   textures,
+		Frames:     spriteFrames,
 		SampleRate: sampleRate,
 		loop:       loop,
 	}, nil
 }
 
-// Sprite return the current sprite for the sequence
-func (seq *Sequence) Sprite() *pixel.Sprite {
-	return seq.textures[seq.frame]
+// Frame return the current frame for the sequence
+func (seq *Sequence) Frame() pixel.Rect {
+	return seq.Frames[seq.frame]
 }
 
 // NextFrame advances the sequence to the next frame until it's finished, it loops if loop is true.
 // Also returns true if the sequence if finished or false if not
 func (seq *Sequence) NextFrame() bool {
-	if seq.frame == len(seq.textures)-1 {
+	if seq.frame == len(seq.Frames)-1 {
 		if seq.loop {
 			seq.frame = 0
 		} else {
