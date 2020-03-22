@@ -74,6 +74,20 @@ type Sequence struct {
 
 // NewSequence constructor for the sequence struct
 func NewSequence(filenames []string, sampleRate float64, loop bool) (*Sequence, error) {
+	/*
+		width, height, padding
+		spritesheet, err := loadPicture(filename)
+		if err != nil {
+			panic(err)
+		}
+
+		var spriteFrames []pixel.Rect
+		for x := spritesheet.Bounds().Min.X; x < spritesheet.Bounds().Max.X; x += width + padding {
+			for y := spritesheet.Bounds().Min.Y; y < spritesheet.Bounds().Max.Y; y += height + padding {
+				spriteFrames = append(spriteFrames, pixel.R(x, y, x+width, y+height))
+			}
+		}
+	*/
 	textures := []*pixel.Sprite{}
 	for _, filename := range filenames {
 		pic, err := loadPicture(filename)
