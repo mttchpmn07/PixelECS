@@ -32,10 +32,41 @@ func NewSKeyboardController(es ...*ecs.Entity) (ecs.System, error) {
 	return cSystem, nil
 }
 
+var (
+	keys     []pixelgl.Button
+	keyBools map[pixelgl.Button]bool
+)
+
+func init() {
+	keys = []pixelgl.Button{
+		pixelgl.KeyA,
+		pixelgl.KeyW,
+		pixelgl.KeyS,
+		pixelgl.KeyD,
+		pixelgl.KeyLeft,
+		pixelgl.KeyRight,
+		pixelgl.KeyUp,
+		pixelgl.KeyDown,
+		pixelgl.KeyQ,
+		pixelgl.KeyE,
+		pixelgl.KeySpace,
+	}
+	keyBools = map[pixelgl.Button]bool{}
+}
+
+func updateKeys(win *pixelgl.Window) {
+	for _, key := range keys {
+		keyBools[key] = win.Pressed(key)
+	}
+
+}
+
 // Update calculates next state for all components used by the system for each of its associated entities
 func (cs *SKeyboardController) Update(args ...interface{}) error {
 	win := args[0].(*pixelgl.Window)
 	dt := (*args[1].(*float64))
+	updateKeys(win)
+
 	for _, e := range cs.controlEntities {
 		loc, err := components.GetCLocation(e)
 		if err != nil {
@@ -49,29 +80,28 @@ func (cs *SKeyboardController) Update(args ...interface{}) error {
 		if err != nil {
 			return err
 		}
-		if win.Pressed(pixelgl.KeyA) || win.Pressed(pixelgl.KeyLeft) {
+		if keyBools[pixelgl.KeyA] || keyBools[pixelgl.KeyLeft] {
 			loc.Loc.X -= kin.Speed * dt
 		}
-		if win.Pressed(pixelgl.KeyD) || win.Pressed(pixelgl.KeyRight) {
+		if keyBools[pixelgl.KeyD] || keyBools[pixelgl.KeyRight] {
 			loc.Loc.X += kin.Speed * dt
 		}
-		if win.Pressed(pixelgl.KeyS) || win.Pressed(pixelgl.KeyDown) {
+		if keyBools[pixelgl.KeyS] || keyBools[pixelgl.KeyDown] {
 			loc.Loc.Y -= kin.Speed * dt
 		}
-		if win.Pressed(pixelgl.KeyW) || win.Pressed(pixelgl.KeyUp) {
+		if keyBools[pixelgl.KeyW] || keyBools[pixelgl.KeyUp] {
 			loc.Loc.Y += kin.Speed * dt
 		}
-		if win.Pressed(pixelgl.KeyE) {
+		if keyBools[pixelgl.KeyE] {
 			sp.Angle -= kin.AngularVelocity * dt
 		}
-		if win.Pressed(pixelgl.KeyQ) {
+		if keyBools[pixelgl.KeyQ] {
 			sp.Angle += kin.AngularVelocity * dt
 		}
-		if win.Pressed(pixelgl.KeySpace) {
+		if keyBools[pixelgl.KeySpace] {
 			//
 		}
 	}
-
 	return nil
 }
 
