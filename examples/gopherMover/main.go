@@ -31,13 +31,9 @@ func createGophers(gopherAssets []string) []*ecs.Entity {
 	return gophers
 }
 
-func buildSystems(gophers []*ecs.Entity, fly *ecs.Entity) {
+func buildSystems(gophers []*ecs.Entity, flys []*ecs.Entity) {
 	// Keyboard Control System
 	controlSystem, err := systems.NewSKeyboardController(gophers...)
-	if err != nil {
-		panic(err)
-	}
-	err = controlSystem.AddEntity(fly)
 	if err != nil {
 		panic(err)
 	}
@@ -53,8 +49,18 @@ func buildSystems(gophers []*ecs.Entity, fly *ecs.Entity) {
 	}
 	ecs.RegisterSystem(renderSystem)
 
+	// Random Walk System
+	randoWalkSystem, err := systems.NewSRandomWalk(flys...)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(randoWalkSystem)
+	if err != nil {
+		panic(err)
+	}
+
 	// Animated Sprite Render System
-	animatorSystem, err := systems.NewSAnimator(fly) //gophers...)
+	animatorSystem, err := systems.NewSAnimator(flys...) //gophers...)
 	if err != nil {
 		panic(err)
 	}
@@ -107,12 +113,16 @@ func run() {
 		"assets/dragon.png",
 	}
 	gophers := createGophers(gopherAssets)
-	fly, err := entities.NewFly(3*width/4, 3*height/4, 50)
-	if err != nil {
-		panic(err)
+	flys := []*ecs.Entity{}
+	for i := 0; i <= 1000; i++ {
+		fly, err := entities.NewFly(3*width/4, 3*height/4, 50)
+		if err != nil {
+			panic(err)
+		}
+		flys = append(flys, fly)
 	}
 	//gophers = append(gophers, fly)
-	buildSystems(gophers, fly)
+	buildSystems(gophers, flys)
 
 	frames := 0
 	second := time.Tick(time.Second)

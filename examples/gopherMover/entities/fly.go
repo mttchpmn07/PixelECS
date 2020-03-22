@@ -1,6 +1,7 @@
 package entities
 
 import (
+	"github.com/faiface/pixel"
 	ecs "github.com/mttchpmn07/PixelECS/core"
 	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
@@ -31,7 +32,7 @@ func NewFly(x, y, width float64) (*ecs.Entity, error) {
 		return nil, err
 	}
 
-	kin := components.NewCKenetics(500, 10)
+	kin := components.NewCKenetics(100, 10, 1000, pixel.V(0, 0), pixel.V(1, 1))
 	err = fly.Add(kin)
 	if err != nil {
 		return nil, err

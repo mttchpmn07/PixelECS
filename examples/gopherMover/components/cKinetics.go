@@ -3,6 +3,7 @@ package components
 import (
 	"fmt"
 
+	"github.com/faiface/pixel"
 	ecs "github.com/mttchpmn07/PixelECS/core"
 )
 
@@ -17,14 +18,20 @@ type CKenetics struct {
 
 	Speed           float64
 	AngularVelocity float64
+	AccMag          float64
+	Velocity        pixel.Vec
+	Acceleration    pixel.Vec
 }
 
 // NewCKenetics returns a new CKenetics component with a given starting speed and angularVelocity
-func NewCKenetics(speed, av float64) ecs.Component {
+func NewCKenetics(speed, av, accMag float64, vel, acc pixel.Vec) ecs.Component {
 	return &CKenetics{
 		tag:             KTAG,
 		Speed:           speed,
 		AngularVelocity: av,
+		AccMag:          accMag,
+		Velocity:        vel,
+		Acceleration:    acc,
 	}
 }
 
