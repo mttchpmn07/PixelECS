@@ -73,28 +73,20 @@ type Sequence struct {
 }
 
 // NewSequence constructor for the sequence struct
-func NewSequence(filenames []string, sampleRate float64, loop bool) (*Sequence, error) {
-	/*
-		width, height, padding
-		spritesheet, err := loadPicture(filename)
-		if err != nil {
-			panic(err)
-		}
-
-		var spriteFrames []pixel.Rect
-		for x := spritesheet.Bounds().Min.X; x < spritesheet.Bounds().Max.X; x += width + padding {
-			for y := spritesheet.Bounds().Min.Y; y < spritesheet.Bounds().Max.Y; y += height + padding {
-				spriteFrames = append(spriteFrames, pixel.R(x, y, x+width, y+height))
-			}
-		}
-	*/
+func NewSequence(filename string, sampleRate, width, height, padding float64, loop bool) (*Sequence, error) {
 	textures := []*pixel.Sprite{}
-	for _, filename := range filenames {
-		pic, err := loadPicture(filename)
-		if err != nil {
-			return nil, err
+	spritesheet, err := loadPicture(filename)
+	if err != nil {
+		panic(err)
+	}
+
+	var spriteFrames []pixel.Rect
+	for x := spritesheet.Bounds().Min.X; x < spritesheet.Bounds().Max.X; x += width + padding {
+		for y := spritesheet.Bounds().Min.Y; y < spritesheet.Bounds().Max.Y; y += height + padding {
+			frame := pixel.R(x, y, x+width, y+height)
+			textures = append(textures, pixel.NewSprite(spritesheet, frame))
+			spriteFrames = append(spriteFrames, pixel.R(x, y, x+width, y+height))
 		}
-		textures = append(textures, pixel.NewSprite(pic, pic.Bounds()))
 	}
 
 	return &Sequence{

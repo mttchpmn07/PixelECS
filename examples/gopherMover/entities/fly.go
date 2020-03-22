@@ -6,11 +6,7 @@ import (
 )
 
 func buildAnimations() (ecs.Component, error) {
-	seq1Files := []string{
-		"assets/0.png",
-		"assets/1.png",
-	}
-	seq, err := components.NewSequence(seq1Files, 10, true)
+	seq, err := components.NewSequence("assets/bug.png", 10, 105, 105, 0, true)
 	if err != nil {
 		return nil, err
 	}
