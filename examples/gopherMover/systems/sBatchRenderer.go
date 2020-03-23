@@ -8,6 +8,29 @@ import (
 	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
 
+/*
+Issue here... can't render different sprites at different z with batch without splitting some up...
+
+1
+
+You could do something like this:
+
+Go through list of sprites from back to front
+
+1.1 sprite already rendered -> next
+
+1.2 check if 2d sprite extends collide with any sprite in the current batch or with any sprite coming before this one that is not yet marked as rendered (partly overlapping)
+
+TRUE: continue with next sprite; rendering the current sprite with the current batch may result in sorting issues
+
+FALSE: add sprite to batch and mark as rendered (eg: flag)
+
+render and clear current batches
+
+still any sprites not flagged as rendered? Resume at 1.
+This will lead to an error free result with heavily reduced draw calls. Note: For multiple materials you need to maintain multiple sprite batches during this loop but the algorithm basically stays the same.
+*/
+
 const (
 	// BRTAG const to hold the SBatchRenderer tag
 	BRTAG = "batchrenderer"
@@ -54,9 +77,6 @@ func (ba *SBatchRenderer) Update(args ...interface{}) error {
 		b.Draw(win)
 		b.Clear()
 	}
-	// for b := range batches {
-	// 	b.Clear()
-	// }
 	return nil
 }
 

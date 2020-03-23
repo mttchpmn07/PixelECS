@@ -45,7 +45,7 @@ func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAs
 
 	x := winWidth * rand.Float64()
 	y := winHeight * rand.Float64()
-	loc := components.NewCLocation(x, y)
+	loc := components.NewCLocation(x, y, rand.Intn(10))
 	err = fly.Add(loc)
 	if err != nil {
 		return nil, err

@@ -16,13 +16,15 @@ const (
 type CLocation struct {
 	tag string
 	Loc pixel.Vec
+	Z   int
 }
 
 // NewCLocation returns a new CLocation component with a given starting x and y
-func NewCLocation(x, y float64) ecs.Component {
+func NewCLocation(x, y float64, z int) ecs.Component {
 	return &CLocation{
 		tag: LTAG,
 		Loc: pixel.V(x, y),
+		Z:   z,
 	}
 }
 

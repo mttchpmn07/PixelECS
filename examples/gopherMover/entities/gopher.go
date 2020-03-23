@@ -13,7 +13,7 @@ func NewGopher(asset string, x, y, width float64) (*ecs.Entity, error) {
 		return nil, err
 	}
 
-	loc := components.NewCLocation(x, y)
+	loc := components.NewCLocation(x, y, 5)
 	err = gopher.Add(loc)
 	if err != nil {
 		return nil, err
