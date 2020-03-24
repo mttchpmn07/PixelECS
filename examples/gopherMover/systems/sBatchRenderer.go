@@ -11,6 +11,9 @@ import (
 /*
 Issue here... can't render different sprites at different z with batch without splitting some up...
 
+
+I got it... I can redraw and clear the same batch for each layer and still be >>> more effecient then multiple single draw commands
+
 1
 
 You could do something like this:
