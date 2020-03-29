@@ -3,7 +3,6 @@ package systems
 import (
 	"time"
 
-	"github.com/faiface/pixel"
 	ecs "github.com/mttchpmn07/PixelECS/core"
 	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
@@ -44,18 +43,6 @@ func (ar *SAnimator) Update(args ...interface{}) error {
 		if !an.Render {
 			continue
 		}
-		ba, err := components.GetCBatchAsset(e)
-		if err != nil {
-			return err
-		}
-		loc, err := components.GetCLocation(e)
-		if err != nil {
-			return err
-		}
-		sp, err := components.GetCProperties(e)
-		if err != nil {
-			return err
-		}
 
 		seq := an.Sequences[an.Current]
 		frameInterval := float64(time.Second) / seq.SampleRate
@@ -64,10 +51,6 @@ func (ar *SAnimator) Update(args ...interface{}) error {
 			an.Finished = seq.NextFrame()
 			an.LastFrameChange = time.Now()
 		}
-		curFrame := seq.Frame()
-		trans := pixel.IM.Scaled(pixel.ZV, sp.Scale).Rotated(pixel.ZV, sp.Angle)
-		sprite := pixel.NewSprite(ba.Spritesheet, curFrame)
-		sprite.Draw(ba.Batch, trans.Moved(loc.Loc))
 	}
 	return nil
 }

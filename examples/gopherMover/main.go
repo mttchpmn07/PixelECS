@@ -34,22 +34,22 @@ func loadPicture(path string) (pixel.Picture, error) {
 	return pixel.PictureDataFromImage(img), nil
 }
 
-func createGophers(gopherAssets []string) []*ecs.Entity {
-	gophers := []*ecs.Entity{}
-
-	for _, asset := range gopherAssets {
-		gopher, err := entities.NewGopher(asset, width/2, height/2, 150)
-		if err != nil {
-			panic(err)
-		}
-		gophers = append(gophers, gopher)
+func createGophers(gopherAsset string) *ecs.Entity {
+	ba, err := components.NewCBatchAsset(gopherAsset)
+	if err != nil {
+		panic(err)
 	}
-	return gophers
+
+	gopher, err := entities.NewGopher(width, height, 100, ba.(*components.CBatchAsset))
+	if err != nil {
+		panic(err)
+	}
+	return gopher
 }
 
-func createFlys(num int) []*ecs.Entity {
+func createFlys(num int, flyAsset string) []*ecs.Entity {
 	flys := []*ecs.Entity{}
-	ba, err := components.NewCBatchAsset("assets/bug.png")
+	ba, err := components.NewCBatchAsset(flyAsset)
 	if err != nil {
 		panic(err)
 	}
@@ -64,7 +64,7 @@ func createFlys(num int) []*ecs.Entity {
 	return flys
 }
 
-func buildSystems(gophers []*ecs.Entity, flys []*ecs.Entity) {
+func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity) {
 	// Random Walk System
 	randoWalkSystem, err := systems.NewSRandomWalk(flys...)
 	if err != nil {
@@ -90,13 +90,14 @@ func buildSystems(gophers []*ecs.Entity, flys []*ecs.Entity) {
 	if err != nil {
 		panic(err)
 	}
+	err = batchRendererSystem.AddEntity(gopher)
 	err = ecs.RegisterSystem(batchRendererSystem)
 	if err != nil {
 		panic(err)
 	}
 
 	// Keyboard Control System
-	controlSystem, err := systems.NewSKeyboardController(gophers...)
+	controlSystem, err := systems.NewSKeyboardController(gopher)
 	if err != nil {
 		panic(err)
 	}
@@ -104,13 +105,6 @@ func buildSystems(gophers []*ecs.Entity, flys []*ecs.Entity) {
 	if err != nil {
 		panic(err)
 	}
-
-	// Static Sprite Render System
-	renderSystem, err := systems.NewSRenderer(gophers...)
-	if err != nil {
-		panic(err)
-	}
-	ecs.RegisterSystem(renderSystem)
 }
 
 func buildWindow() (pixelgl.WindowConfig, *pixelgl.Window) {
@@ -148,16 +142,16 @@ func run() {
 	}
 	win.SetSmooth(true)
 	gopherAssets := []string{
-		//"assets/hiking.png",
-		//"assets/party.png",
-		//"assets/theif.png",
-		//"assets/slacker.png",
-		//"assets/nerdy.png",
+		"assets/hiking.png",
+		"assets/party.png",
+		"assets/theif.png",
+		"assets/slacker.png",
+		"assets/nerdy.png",
 		"assets/dragon.png",
 	}
-	gophers := createGophers(gopherAssets)
-	flys := createFlys(1000)
-	buildSystems(gophers, flys)
+	gopher := createGophers(gopherAssets[1])
+	flys := createFlys(1000, "assets/bug.png")
+	buildSystems(gopher, flys)
 
 	frames := 0
 	second := time.Tick(time.Second)

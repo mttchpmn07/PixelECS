@@ -21,16 +21,6 @@ func buildAnimations(asset *components.CBatchAsset) (ecs.Component, error) {
 	return an, nil
 }
 
-/*
-Going to create CBatchAsset before creating all the flys in main. Think of it like passing a single
-pointer to a picture. This will be assigned as a component to each on that matters. Then all
-rendering systems (renderer/animator) will just draw to the respective batch
-
-
-Only thing left is to draw each batch after updates.... might be worth creating a system for that
-(general render system????)
-*/
-
 // NewFly creates a new animated fly
 func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAsset) (*ecs.Entity, error) {
 	fly, err := ecs.NewEntity()

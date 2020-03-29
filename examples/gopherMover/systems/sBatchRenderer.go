@@ -1,6 +1,8 @@
 package systems
 
 import (
+	"sort"
+
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 
@@ -9,35 +11,29 @@ import (
 )
 
 /*
-Issue here... can't render different sprites at different z with batch without splitting some up...
-
-
-I got it... I can redraw and clear the same batch for each layer and still be >>> more effecient then multiple single draw commands
-
-1
-
-You could do something like this:
-
-Go through list of sprites from back to front
-
-1.1 sprite already rendered -> next
-
-1.2 check if 2d sprite extends collide with any sprite in the current batch or with any sprite coming before this one that is not yet marked as rendered (partly overlapping)
-
-TRUE: continue with next sprite; rendering the current sprite with the current batch may result in sorting issues
-
-FALSE: add sprite to batch and mark as rendered (eg: flag)
-
-render and clear current batches
-
-still any sprites not flagged as rendered? Resume at 1.
-This will lead to an error free result with heavily reduced draw calls. Note: For multiple materials you need to maintain multiple sprite batches during this loop but the algorithm basically stays the same.
+TODO:
+	If optimization in needed it might be possible by checking for oclusion
 */
 
 const (
 	// BRTAG const to hold the SBatchRenderer tag
 	BRTAG = "batchrenderer"
 )
+
+type drawObject struct {
+	Batch       *pixel.Batch
+	Spritesheet *pixel.Picture
+	Frame       *pixel.Rect
+	Loc         *pixel.Vec
+	Angle       float64
+	Scale       float64
+}
+
+func (do *drawObject) render() {
+	trans := pixel.IM.Scaled(pixel.ZV, do.Scale).Rotated(pixel.ZV, do.Angle)
+	sprite := pixel.NewSprite(*do.Spritesheet, *do.Frame)
+	sprite.Draw(do.Batch, trans.Moved(*do.Loc))
+}
 
 // SBatchRenderer Sprite Render System
 type SBatchRenderer struct {
@@ -48,60 +44,114 @@ type SBatchRenderer struct {
 
 // NewSBatchRenderer returns a new sprite render system with a give list of entities attached via a variadic function call
 func NewSBatchRenderer(es ...*ecs.Entity) (ecs.System, error) {
-	ba := &SBatchRenderer{
+	br := &SBatchRenderer{
 		tag:             BRTAG,
 		controlEntities: []*ecs.Entity{},
 	}
-	err := ba.AddEntity(es...)
+	err := br.AddEntity(es...)
 	if err != nil {
 		return nil, err
 	}
-	return ba, nil
+	return br, nil
 }
 
 // Update draws sprite for each associated entity
-func (ba *SBatchRenderer) Update(args ...interface{}) error {
+func (br *SBatchRenderer) Update(args ...interface{}) error {
+	/*
+		sudo code of what is happening here
+
+		layers = map layer => []drawObjs
+		batches = set batch
+		for entity e
+			build drawObj(location, rotation, batch, frame)
+			layers[layer].append(drawObj)
+		for layer l in sorted layers
+			for drawObj do in layers[l]
+				do.Render
+			for batch b in batches
+				b.Draw(win)
+				b.Clear()
+	*/
 	win := args[0].(*pixelgl.Window)
 
-	// cheap Set so we don't redraw the same batch
+	layers := map[int][]*drawObject{}
 	var exists = struct{}{}
 	batches := map[*pixel.Batch]struct{}{}
-	for _, e := range ba.controlEntities {
+	for _, e := range br.controlEntities {
+		an, err := components.GetCAnimation(e)
+		if err != nil {
+			return err
+		}
+		if !an.Render {
+			continue
+		}
+		curFrame := an.GetCurrentFrame()
 		ba, err := components.GetCBatchAsset(e)
 		if err != nil {
 			return err
 		}
-		_, c := batches[ba.Batch]
-		if !c {
+		loc, err := components.GetCLocation(e)
+		if err != nil {
+			return err
+		}
+		sp, err := components.GetCProperties(e)
+		if err != nil {
+			return err
+		}
+		do := &drawObject{
+			Batch:       ba.Batch,
+			Spritesheet: &ba.Spritesheet,
+			Frame:       &curFrame,
+			Loc:         &loc.Loc,
+			Angle:       sp.Angle,
+			Scale:       sp.Scale,
+		}
+		if _, OK := layers[loc.Z]; !OK {
+			layers[loc.Z] = []*drawObject{}
+		}
+		layers[loc.Z] = append(layers[loc.Z], do)
+		if _, c := batches[ba.Batch]; !c {
 			batches[ba.Batch] = exists
 		}
 	}
-	for b := range batches {
-		b.Draw(win)
-		b.Clear()
+	keys := make([]int, 0, len(layers))
+	for k := range layers {
+		keys = append(keys, k)
+	}
+	sKeys := sort.IntSlice(keys)
+	sort.Sort(sKeys)
+	for _, k := range sKeys {
+		layer := layers[k]
+		for _, do := range layer {
+			do.render()
+		}
+		for b, _ := range batches {
+			b.Draw(win)
+			b.Clear()
+		}
 	}
 	return nil
 }
 
 // AddEntity adds any number of entities to the keyboard control system via a variadic function call
-func (ba *SBatchRenderer) AddEntity(es ...*ecs.Entity) error {
-	ba.controlEntities = append(ba.controlEntities, es...)
+func (br *SBatchRenderer) AddEntity(es ...*ecs.Entity) error {
+	br.controlEntities = append(br.controlEntities, es...)
 	return nil
 }
 
 // RemoveEntity removes any number of entities from the keyboard control system via a variadic function call
-func (ba *SBatchRenderer) RemoveEntity(es ...*ecs.Entity) error {
+func (br *SBatchRenderer) RemoveEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
-		newEntries, err := ecs.StripEntity(ba.controlEntities, e)
+		newEntries, err := ecs.StripEntity(br.controlEntities, e)
 		if err != nil {
 			return err
 		}
-		ba.controlEntities = newEntries
+		br.controlEntities = newEntries
 	}
 	return nil
 }
 
 // Tag returns the tag for this system
-func (ba *SBatchRenderer) Tag() string {
-	return ba.tag
+func (br *SBatchRenderer) Tag() string {
+	return br.tag
 }
