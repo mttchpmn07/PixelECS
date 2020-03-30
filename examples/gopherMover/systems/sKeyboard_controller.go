@@ -17,6 +17,7 @@ type SKeyboardController struct {
 	tag string
 
 	controlEntities []*ecs.Entity
+	comps           []string
 }
 
 // NewSKeyboardController returns a new Keyboard Control System with all given entities attached
@@ -24,12 +25,23 @@ func NewSKeyboardController(es ...*ecs.Entity) (ecs.System, error) {
 	cSystem := &SKeyboardController{
 		tag:             SKCTAG,
 		controlEntities: []*ecs.Entity{},
+		comps: []string{
+			components.ATAG,
+			components.LTAG,
+			components.KTAG,
+			components.SPTAG,
+		},
 	}
 	err := cSystem.AddEntity(es...)
 	if err != nil {
 		return nil, err
 	}
 	return cSystem, nil
+}
+
+// GetComponents returns the nessary components for an entity to be used in this system
+func (cs *SKeyboardController) GetComponents() []string {
+	return cs.comps
 }
 
 var (
@@ -119,6 +131,10 @@ func (cs *SKeyboardController) Update(args ...interface{}) error {
 
 // AddEntity adds any number of entities to the keyboard control system via a variadic function call
 func (cs *SKeyboardController) AddEntity(es ...*ecs.Entity) error {
+	err := ecs.ValidateEntitySystem(cs, es...)
+	if err != nil {
+		return err
+	}
 	cs.controlEntities = append(cs.controlEntities, es...)
 	return nil
 }

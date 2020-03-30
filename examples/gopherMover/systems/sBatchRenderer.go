@@ -40,6 +40,7 @@ type SBatchRenderer struct {
 	tag string
 
 	controlEntities []*ecs.Entity
+	comps           []string
 }
 
 // NewSBatchRenderer returns a new sprite render system with a give list of entities attached via a variadic function call
@@ -47,12 +48,23 @@ func NewSBatchRenderer(es ...*ecs.Entity) (ecs.System, error) {
 	br := &SBatchRenderer{
 		tag:             BRTAG,
 		controlEntities: []*ecs.Entity{},
+		comps: []string{
+			components.ATAG,
+			components.BATAG,
+			components.LTAG,
+			components.SPTAG,
+		},
 	}
 	err := br.AddEntity(es...)
 	if err != nil {
 		return nil, err
 	}
 	return br, nil
+}
+
+// GetComponents returns the nessary components for an entity to be used in this system
+func (br *SBatchRenderer) GetComponents() []string {
+	return br.comps
 }
 
 // Update draws sprite for each associated entity
@@ -135,6 +147,10 @@ func (br *SBatchRenderer) Update(args ...interface{}) error {
 
 // AddEntity adds any number of entities to the keyboard control system via a variadic function call
 func (br *SBatchRenderer) AddEntity(es ...*ecs.Entity) error {
+	err := ecs.ValidateEntitySystem(br, es...)
+	if err != nil {
+		return err
+	}
 	br.controlEntities = append(br.controlEntities, es...)
 	return nil
 }

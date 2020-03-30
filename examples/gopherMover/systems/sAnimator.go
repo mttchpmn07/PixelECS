@@ -17,6 +17,7 @@ type SAnimator struct {
 	tag string
 
 	controlEntities []*ecs.Entity
+	comps           []string
 }
 
 // NewSAnimator returns a new sprite render system with a give list of entities attached via a variadic function call
@@ -24,12 +25,18 @@ func NewSAnimator(es ...*ecs.Entity) (ecs.System, error) {
 	ar := &SAnimator{
 		tag:             ARTAG,
 		controlEntities: []*ecs.Entity{},
+		comps:           []string{components.ATAG},
 	}
 	err := ar.AddEntity(es...)
 	if err != nil {
 		return nil, err
 	}
 	return ar, nil
+}
+
+// GetComponents returns the nessary components for an entity to be used in this system
+func (ar *SAnimator) GetComponents() []string {
+	return ar.comps
 }
 
 // Update draws sprite for each associated entity

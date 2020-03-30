@@ -12,6 +12,7 @@ type System interface {
 	Update(args ...interface{}) error
 	AddEntity(es ...*Entity) error
 	RemoveEntity(es ...*Entity) error
+	GetComponents() []string
 	Tag() string
 }
 
@@ -22,6 +23,20 @@ var systems systemRegister
 
 func init() {
 	systems = systemRegister{}
+}
+
+// ValidateEntitySystem takes and entity and system and validates the entity has the required components for the system returns error if it doesn't
+func ValidateEntitySystem(sys System, es ...*Entity) error {
+	var err error
+	for _, e := range es {
+		for _, comp := range sys.GetComponents() {
+			_, err = e.Query(comp)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	return nil
 }
 
 // RegisterSystem adds a system to the global systems pool

@@ -8,19 +8,6 @@ import (
 	"github.com/mttchpmn07/PixelECS/gopherMover/components"
 )
 
-func buildAnimations(asset *components.CBatchAsset) (ecs.Component, error) {
-	seq, err := components.NewSequence(asset, 10, 105, 105, 0, 0, 1, true)
-	if err != nil {
-		return nil, err
-	}
-
-	seqMap := map[string]*components.Sequence{
-		"fly": seq,
-	}
-	an := components.NewCAnimation(seqMap, "fly", true)
-	return an, nil
-}
-
 // NewFly creates a new animated fly
 func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAsset) (*ecs.Entity, error) {
 	fly, err := ecs.NewEntity()
@@ -48,10 +35,14 @@ func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAs
 		return nil, err
 	}
 
-	an, err := buildAnimations(asset)
+	seq, err := components.NewSequence(asset, 10, 105, 105, 0, 0, 1, true)
 	if err != nil {
 		return nil, err
 	}
+	seqMap := map[string]*components.Sequence{
+		"fly": seq,
+	}
+	an := components.NewCAnimation(seqMap, "fly", true)
 	err = fly.Add(an)
 	if err != nil {
 		return nil, err
