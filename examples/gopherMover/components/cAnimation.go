@@ -55,8 +55,10 @@ func (an *CAnimation) String() string {
 
 // SetSequence changes the current sequence
 func (an *CAnimation) SetSequence(name string) {
-	an.Current = name
-	an.LastFrameChange = time.Now()
+	if an.Current != name {
+		an.Current = name
+		an.LastFrameChange = time.Now()
+	}
 }
 
 // GetCurrentFrame returns the current sprite for the current sequence
@@ -73,13 +75,18 @@ type Sequence struct {
 }
 
 // NewSequence constructor for the sequence struct
-func NewSequence(asset *CBatchAsset, sampleRate, width, height, padding float64, loop bool) (*Sequence, error) {
+func NewSequence(asset *CBatchAsset, sampleRate, width, height, padding float64, startFrame, endFrame int, loop bool) (*Sequence, error) {
 	var spriteFrames []pixel.Rect
 	max := pixel.V(asset.Spritesheet.Bounds().Max.X, asset.Spritesheet.Bounds().Max.Y)
 	min := pixel.V(asset.Spritesheet.Bounds().Min.X, asset.Spritesheet.Bounds().Min.Y)
-	for x := min.X; x < max.X; x += width + padding {
-		for y := min.Y; y < max.Y; y += height + padding {
-			spriteFrames = append(spriteFrames, pixel.R(x, y, x+width, y+height))
+	var frameCount int
+	frameCount = 0
+	for y := min.Y; y < max.Y; y += height + padding {
+		for x := min.X; x < max.X; x += width + padding {
+			if frameCount >= startFrame && frameCount <= endFrame {
+				spriteFrames = append(spriteFrames, pixel.R(x, y, x+width, y+height))
+			}
+			frameCount++
 		}
 	}
 

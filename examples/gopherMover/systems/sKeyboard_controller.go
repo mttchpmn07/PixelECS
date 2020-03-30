@@ -80,10 +80,22 @@ func (cs *SKeyboardController) Update(args ...interface{}) error {
 		if err != nil {
 			return err
 		}
+		an, err := components.GetCAnimation(e)
+		if err != nil {
+			return err
+		}
 		if keyBools[pixelgl.KeyA] || keyBools[pixelgl.KeyLeft] {
+			if an.Current != "left" {
+				an.SetSequence("left")
+				sp.Angle *= -1
+			}
 			loc.Loc.X -= kin.Speed * dt
 		}
 		if keyBools[pixelgl.KeyD] || keyBools[pixelgl.KeyRight] {
+			if an.Current != "right" {
+				an.SetSequence("right")
+				sp.Angle *= -1
+			}
 			loc.Loc.X += kin.Speed * dt
 		}
 		if keyBools[pixelgl.KeyS] || keyBools[pixelgl.KeyDown] {

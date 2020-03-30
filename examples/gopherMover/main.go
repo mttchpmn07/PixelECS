@@ -76,7 +76,11 @@ func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity) {
 	}
 
 	// Animated Sprite Render System
-	animatorSystem, err := systems.NewSAnimator(flys...) //gophers...)
+	animatorSystem, err := systems.NewSAnimator(flys...)
+	if err != nil {
+		panic(err)
+	}
+	err = animatorSystem.AddEntity(gopher)
 	if err != nil {
 		panic(err)
 	}
@@ -91,6 +95,9 @@ func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity) {
 		panic(err)
 	}
 	err = batchRendererSystem.AddEntity(gopher)
+	if err != nil {
+		panic(err)
+	}
 	err = ecs.RegisterSystem(batchRendererSystem)
 	if err != nil {
 		panic(err)
@@ -141,16 +148,18 @@ func run() {
 		panic(err)
 	}
 	win.SetSmooth(true)
-	gopherAssets := []string{
-		"assets/hiking.png",
-		"assets/party.png",
-		"assets/theif.png",
-		"assets/slacker.png",
-		"assets/nerdy.png",
-		"assets/dragon.png",
-	}
-	gopher := createGophers(gopherAssets[1])
-	flys := createFlys(1000, "assets/bug.png")
+	/*
+		gopherAssets := []string{
+			"assets/hiking.png",
+			"assets/party.png",
+			"assets/theif.png",
+			"assets/slacker.png",
+			"assets/nerdy.png",
+			"assets/dragon.png",
+		}
+	*/
+	gopher := createGophers("assets/dragon_animated.png")
+	flys := createFlys(500, "assets/bug.png")
 	buildSystems(gopher, flys)
 
 	frames := 0

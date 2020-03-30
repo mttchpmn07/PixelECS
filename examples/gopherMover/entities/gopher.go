@@ -30,16 +30,21 @@ func NewGopher(winWidth, winHeight, spriteWidth float64, asset *components.CBatc
 		return nil, err
 	}
 
-	seq, err := components.NewSequence(asset, 1000,
-		asset.Spritesheet.Bounds().W(), asset.Spritesheet.Bounds().H(), 0, true)
+	leftSeq, err := components.NewSequence(asset, 15, 200, 200, 0, 0, 5, true)
+	if err != nil {
+		return nil, err
+	}
+
+	rightSeq, err := components.NewSequence(asset, 15, 200, 200, 0, 6, 11, true)
 	if err != nil {
 		return nil, err
 	}
 
 	seqMap := map[string]*components.Sequence{
-		"walk": seq,
+		"right": rightSeq,
+		"left":  leftSeq,
 	}
-	an := components.NewCAnimation(seqMap, "walk", true)
+	an := components.NewCAnimation(seqMap, "left", true)
 	if err != nil {
 		return nil, err
 	}

@@ -125,7 +125,7 @@ func (br *SBatchRenderer) Update(args ...interface{}) error {
 		for _, do := range layer {
 			do.render()
 		}
-		for b, _ := range batches {
+		for b := range batches {
 			b.Draw(win)
 			b.Clear()
 		}

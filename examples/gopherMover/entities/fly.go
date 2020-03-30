@@ -9,7 +9,7 @@ import (
 )
 
 func buildAnimations(asset *components.CBatchAsset) (ecs.Component, error) {
-	seq, err := components.NewSequence(asset, 10, 105, 105, 0, true)
+	seq, err := components.NewSequence(asset, 10, 105, 105, 0, 0, 1, true)
 	if err != nil {
 		return nil, err
 	}
