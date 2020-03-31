@@ -184,5 +184,7 @@ func run() {
 }
 
 func main() {
-	pixelgl.Run(run)
+	//pixelgl.Run(run)
+	poly := components.NewCCollisionPoly(pixel.V(0, 0), pixel.V(0, 1), pixel.V(1, 1), pixel.V(1, 0))
+	fmt.Println(poly)
 }
