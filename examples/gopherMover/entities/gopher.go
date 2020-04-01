@@ -8,7 +8,7 @@ import (
 
 // NewGopher creates a new gopher with a given sprite loaded from a png file and a starting x and y
 func NewGopher(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAsset) (*ecs.Entity, error) {
-	gopher, err := ecs.NewEntity()
+	gopher, err := ecs.NewEntity("gopher")
 	if err != nil {
 		return nil, err
 	}
@@ -20,6 +20,19 @@ func NewGopher(winWidth, winHeight, spriteWidth float64, asset *components.CBatc
 
 	loc := components.NewCLocation(winWidth/2, winHeight/2, 5)
 	err = gopher.Add(loc)
+	if err != nil {
+		return nil, err
+	}
+
+	cLoc := loc.(*components.CLocation)
+	poly := components.NewCCollisionPoly(
+		cLoc,
+		pixel.V(spriteWidth/4, 3*spriteWidth/8),
+		pixel.V(spriteWidth/4, -3*spriteWidth/8),
+		pixel.V(-spriteWidth/4, -3*spriteWidth/8),
+		pixel.V(-spriteWidth/4, 3*spriteWidth/8),
+	)
+	err = gopher.Add(poly)
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +57,7 @@ func NewGopher(winWidth, winHeight, spriteWidth float64, asset *components.CBatc
 		"right": rightSeq,
 		"left":  leftSeq,
 	}
-	an := components.NewCAnimation(seqMap, "left", true)
+	an := components.NewCAnimation(seqMap, "left")
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +67,7 @@ func NewGopher(winWidth, winHeight, spriteWidth float64, asset *components.CBatc
 	}
 
 	bounds := an.(*components.CAnimation).GetCurrentFrame()
-	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds)
+	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds, true)
 	err = gopher.Add(sp)
 	if err != nil {
 		return nil, err

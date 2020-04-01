@@ -21,17 +21,15 @@ type CAnimation struct {
 	Current         string
 	LastFrameChange time.Time
 	Finished        bool
-	Render          bool
 }
 
 // NewCAnimation constructor for CAnimation
-func NewCAnimation(sequences map[string]*Sequence, defaultSequence string, render bool) ecs.Component {
+func NewCAnimation(sequences map[string]*Sequence, defaultSequence string) ecs.Component {
 	return &CAnimation{
 		tag:             ATAG,
 		Sequences:       sequences,
 		Current:         defaultSequence,
 		LastFrameChange: time.Now(),
-		Render:          render,
 	}
 }
 

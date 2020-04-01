@@ -90,12 +90,16 @@ func (br *SBatchRenderer) Update(args ...interface{}) error {
 	var exists = struct{}{}
 	batches := map[*pixel.Batch]struct{}{}
 	for _, e := range br.controlEntities {
-		an, err := components.GetCAnimation(e)
+		sp, err := components.GetCProperties(e)
 		if err != nil {
 			return err
 		}
-		if !an.Render {
+		if !sp.Active {
 			continue
+		}
+		an, err := components.GetCAnimation(e)
+		if err != nil {
+			return err
 		}
 		curFrame := an.GetCurrentFrame()
 		ba, err := components.GetCBatchAsset(e)
@@ -103,10 +107,6 @@ func (br *SBatchRenderer) Update(args ...interface{}) error {
 			return err
 		}
 		loc, err := components.GetCLocation(e)
-		if err != nil {
-			return err
-		}
-		sp, err := components.GetCProperties(e)
 		if err != nil {
 			return err
 		}

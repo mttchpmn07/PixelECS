@@ -25,7 +25,10 @@ func NewSAnimator(es ...*ecs.Entity) (ecs.System, error) {
 	ar := &SAnimator{
 		tag:             ARTAG,
 		controlEntities: []*ecs.Entity{},
-		comps:           []string{components.ATAG},
+		comps: []string{
+			components.ATAG,
+			components.SPTAG,
+		},
 	}
 	err := ar.AddEntity(es...)
 	if err != nil {
@@ -43,12 +46,16 @@ func (ar *SAnimator) GetComponents() []string {
 func (ar *SAnimator) Update(args ...interface{}) error {
 	//win := args[0].(*pixelgl.Window)
 	for _, e := range ar.controlEntities {
-		an, err := components.GetCAnimation(e)
+		sp, err := components.GetCProperties(e)
 		if err != nil {
 			return err
 		}
-		if !an.Render {
+		if !sp.Active {
 			continue
+		}
+		an, err := components.GetCAnimation(e)
+		if err != nil {
+			return err
 		}
 
 		seq := an.Sequences[an.Current]
@@ -64,6 +71,10 @@ func (ar *SAnimator) Update(args ...interface{}) error {
 
 // AddEntity adds any number of entities to the keyboard control system via a variadic function call
 func (ar *SAnimator) AddEntity(es ...*ecs.Entity) error {
+	err := ecs.ValidateEntitySystem(ar, es...)
+	if err != nil {
+		return err
+	}
 	ar.controlEntities = append(ar.controlEntities, es...)
 	return nil
 }

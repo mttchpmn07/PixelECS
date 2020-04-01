@@ -54,6 +54,13 @@ func (rw *SRandomWalk) Update(args ...interface{}) error {
 	dt := (*args[1].(*float64))
 
 	for _, e := range rw.controlEntities {
+		sp, err := components.GetCProperties(e)
+		if err != nil {
+			return err
+		}
+		if !sp.Active {
+			continue
+		}
 		loc, err := components.GetCLocation(e)
 		if err != nil {
 			return err

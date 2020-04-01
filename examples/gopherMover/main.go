@@ -112,6 +112,32 @@ func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity) {
 	if err != nil {
 		panic(err)
 	}
+
+	collisionSystem, err := systems.NewSCollisionTracker(flys...)
+	if err != nil {
+		panic(err)
+	}
+	err = collisionSystem.AddEntity(gopher)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(collisionSystem)
+	if err != nil {
+		panic(err)
+	}
+
+	collisionRenderSystem, err := systems.NewSCollisionPolyRenderer(flys...)
+	if err != nil {
+		panic(err)
+	}
+	err = collisionRenderSystem.AddEntity(gopher)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(collisionRenderSystem)
+	if err != nil {
+		panic(err)
+	}
 }
 
 func buildWindow() (pixelgl.WindowConfig, *pixelgl.Window) {
@@ -159,7 +185,7 @@ func run() {
 		}
 	*/
 	gopher := createGophers("assets/dragon_animated.png")
-	flys := createFlys(500, "assets/bug.png")
+	flys := createFlys(5, "assets/bug.png")
 	buildSystems(gopher, flys)
 
 	frames := 0
@@ -184,7 +210,27 @@ func run() {
 }
 
 func main() {
-	//pixelgl.Run(run)
-	poly := components.NewCCollisionPoly(pixel.V(0, 0), pixel.V(0, 1), pixel.V(1, 1), pixel.V(1, 0))
-	fmt.Println(poly)
+	pixelgl.Run(run)
+	/*
+		posA := components.NewCLocation(0, 0, 0)
+		posB := components.NewCLocation(0, 0, 0)
+		polyA := components.NewCCollisionPoly(
+			posA.(*components.CLocation),
+			pixel.V(1, 3.5),
+			pixel.V(2, 4.5),
+			pixel.V(6.5, 6),
+			pixel.V(6.5, 3),
+			pixel.V(5.5, 1)).(*components.CCollisionPoly)
+		polyB := components.NewCCollisionPoly(
+			posB.(*components.CLocation),
+			pixel.V(1.5, 6),
+			pixel.V(3.5, 9),
+			pixel.V(9, 10),
+			pixel.V(7.5, 4)).(*components.CCollisionPoly)
+		vel := pixel.V(0.5, 0)
+		for i := 0; i < 20; i++ {
+			fmt.Println(i, polyA.Collides(polyB), posA.(*components.CLocation).Loc)
+			posA.(*components.CLocation).Loc = posA.(*components.CLocation).Loc.Add(vel)
+		}
+	*/
 }

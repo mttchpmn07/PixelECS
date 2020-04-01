@@ -10,7 +10,7 @@ import (
 
 // NewFly creates a new animated fly
 func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAsset) (*ecs.Entity, error) {
-	fly, err := ecs.NewEntity()
+	fly, err := ecs.NewEntity("fly")
 	if err != nil {
 		return nil, err
 	}
@@ -24,6 +24,19 @@ func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAs
 	y := winHeight * rand.Float64()
 	loc := components.NewCLocation(x, y, rand.Intn(10))
 	err = fly.Add(loc)
+	if err != nil {
+		return nil, err
+	}
+
+	cLoc := loc.(*components.CLocation)
+	poly := components.NewCCollisionPoly(
+		cLoc,
+		pixel.V(spriteWidth/2, spriteWidth/2),
+		pixel.V(spriteWidth/2, -spriteWidth/2),
+		pixel.V(-spriteWidth/2, -spriteWidth/2),
+		pixel.V(-spriteWidth/2, spriteWidth/2),
+	)
+	err = fly.Add(poly)
 	if err != nil {
 		return nil, err
 	}
@@ -42,14 +55,14 @@ func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAs
 	seqMap := map[string]*components.Sequence{
 		"fly": seq,
 	}
-	an := components.NewCAnimation(seqMap, "fly", true)
+	an := components.NewCAnimation(seqMap, "fly")
 	err = fly.Add(an)
 	if err != nil {
 		return nil, err
 	}
 
 	bounds := an.(*components.CAnimation).GetCurrentFrame()
-	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds)
+	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds, true)
 	err = fly.Add(sp)
 	if err != nil {
 		return nil, err
