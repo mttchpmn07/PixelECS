@@ -9,11 +9,11 @@ import (
 )
 
 const (
-	// KTAG const to hold the Location tag
+	// CPTAG CCollisionPoly tag
 	CPTAG = "collisionpoly"
 )
 
-// CKenetics component for storing kinetic information of an entity
+// CCollisionPoly component storing the boundry polygon of a colliding entity.
 type CCollisionPoly struct {
 	tag string
 
@@ -22,7 +22,8 @@ type CCollisionPoly struct {
 	UniqueEdges edgeSlice
 }
 
-// NewCCollisionPoly returns a new CKenetics component with a given starting speed and angularVelocity
+// NewCCollisionPoly constructs a CCollisionPoly from an anchor CLocation and a list of points.
+// The points should be defined either clockwise or counter clockwise around the polygon.
 func NewCCollisionPoly(anchor *CLocation, points ...pixel.Vec) ecs.Component {
 	var angles []float64
 	var uniqueEdges []edge
@@ -59,7 +60,7 @@ FINDNORMALS:
 	}
 }
 
-// GetCCollisionPoly returns the actual CCollisionPoly struct implmenting the component for a given entity
+// GetCCollisionPoly returns the actual struct implmenting the component for a given entity
 func GetCCollisionPoly(e *ecs.Entity) (*CCollisionPoly, error) {
 	comp, err := e.Query(CPTAG)
 	if err != nil {
@@ -68,7 +69,7 @@ func GetCCollisionPoly(e *ecs.Entity) (*CCollisionPoly, error) {
 	return comp.(*CCollisionPoly), nil
 }
 
-// Tag returns the tag for this component
+// Tag getter for tag
 func (cp *CCollisionPoly) Tag() string {
 	return cp.tag
 }
@@ -95,7 +96,7 @@ func (eds *edgeSlice) String() string {
 	return edges
 }
 
-// NormalAxes returns all unique normal axes
+// NormalAxes returns all unique normal axis of a CCollisionPoly
 func (cp *CCollisionPoly) NormalAxes() []pixel.Vec {
 	var normals []pixel.Vec
 	for _, ed := range cp.UniqueEdges {

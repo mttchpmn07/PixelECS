@@ -10,11 +10,11 @@ import (
 )
 
 const (
-	// SBMTAG const to hold the SRandomWalk tag
+	// SBMTAG SRandomWalk tag
 	SBMTAG = "randomwalk"
 )
 
-// SRandomWalk random walk system
+// SRandomWalk stores information for the random walk system
 type SRandomWalk struct {
 	tag string
 
@@ -22,7 +22,7 @@ type SRandomWalk struct {
 	comps           []string
 }
 
-// NewSRandomWalk returns a new random walk system with all given entities attached
+// NewSRandomWalk constructs a SRandomWalk from a varidact list of entities
 func NewSRandomWalk(es ...*ecs.Entity) (ecs.System, error) {
 	cSystem := &SRandomWalk{
 		tag:             SBMTAG,
@@ -48,9 +48,8 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
-// Update calculates next state for all components used by the system for each of its associated entities
+// Update calculates next state for the systems entities
 func (rw *SRandomWalk) Update(args ...interface{}) error {
-	//win := args[0].(*pixelgl.Window)
 	dt := (*args[1].(*float64))
 
 	for _, e := range rw.controlEntities {
@@ -73,13 +72,12 @@ func (rw *SRandomWalk) Update(args ...interface{}) error {
 		kin.Velocity = kin.Velocity.Add(kin.Acceleration.Scaled(0.5 * dt)).Unit().Scaled(kin.Speed)
 		kin.Velocity.X += kin.Acceleration.X * 0.5 * dt
 		kin.Velocity.Y += kin.Acceleration.Y * 0.5 * dt
-		//fmt.Println(kin.Acceleration, kin.Velocity)
 		loc.Loc = loc.Loc.Add(kin.Velocity.Scaled(dt))
 	}
 	return nil
 }
 
-// AddEntity adds any number of entities to the keyboard control system via a variadic function call
+// AddEntity adds any number of entities to this system
 func (rw *SRandomWalk) AddEntity(es ...*ecs.Entity) error {
 	err := ecs.ValidateEntitySystem(rw, es...)
 	if err != nil {
@@ -89,7 +87,7 @@ func (rw *SRandomWalk) AddEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// RemoveEntity removes any number of entities from the keyboard control system via a variadic function call
+// RemoveEntity removes any number of entities from this system
 func (rw *SRandomWalk) RemoveEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
 		newEntries, err := ecs.StripEntity(rw.controlEntities, e)
@@ -101,7 +99,7 @@ func (rw *SRandomWalk) RemoveEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// Tag returns the tag for this system
+// Tag getter for tag
 func (rw *SRandomWalk) Tag() string {
 	return rw.tag
 }

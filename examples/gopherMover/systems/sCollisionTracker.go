@@ -6,11 +6,11 @@ import (
 )
 
 const (
-	// CTTAG const to hold the SCollisionTracker tag
+	// CTTAG SCollisionTracker tag
 	CTTAG = "collisiontracker"
 )
 
-// SCollisionTracker Sprite Render System
+// SCollisionTracker stores information for the collision tracking system
 type SCollisionTracker struct {
 	tag string
 
@@ -18,7 +18,7 @@ type SCollisionTracker struct {
 	comps           []string
 }
 
-// NewSCollisionTracker returns a new sprite render system with a give list of entities attached via a variadic function call
+// NewSCollisionTracker constructs a SCollisionTracker from a varidact list of entities
 func NewSCollisionTracker(es ...*ecs.Entity) (ecs.System, error) {
 	ct := &SCollisionTracker{
 		tag:             CTTAG,
@@ -40,7 +40,7 @@ func (ct *SCollisionTracker) GetComponents() []string {
 	return ct.comps
 }
 
-// Update draws sprite for each associated entity
+// Update checks for any valid collisions (for the moment it also resolves them, but I'd like to make that a seperate system)
 func (ct *SCollisionTracker) Update(args ...interface{}) error {
 	//win := args[0].(*pixelgl.Window)
 	for _, e1 := range ct.controlEntities {
@@ -75,13 +75,13 @@ func (ct *SCollisionTracker) Update(args ...interface{}) error {
 	return nil
 }
 
-// AddEntity adds any number of entities to the keyboard control system via a variadic function call
+// AddEntity adds any number of entities to this system
 func (ct *SCollisionTracker) AddEntity(es ...*ecs.Entity) error {
 	ct.controlEntities = append(ct.controlEntities, es...)
 	return nil
 }
 
-// RemoveEntity removes any number of entities from the keyboard control system via a variadic function call
+// RemoveEntity removes any number of entities from this system
 func (ct *SCollisionTracker) RemoveEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
 		newEntries, err := ecs.StripEntity(ct.controlEntities, e)
@@ -93,7 +93,7 @@ func (ct *SCollisionTracker) RemoveEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// Tag returns the tag for this system
+// Tag getter for tag
 func (ct *SCollisionTracker) Tag() string {
 	return ct.tag
 }

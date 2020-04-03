@@ -9,7 +9,7 @@ import (
 )
 
 const (
-	// ATAG const to hold the CAnimation tag
+	// ATAG CAnimation tag
 	ATAG = "animation"
 )
 
@@ -23,7 +23,7 @@ type CAnimation struct {
 	Finished        bool
 }
 
-// NewCAnimation constructor for CAnimation
+// NewCAnimation constructs a CAnimation from a map of sequences
 func NewCAnimation(sequences map[string]*Sequence, defaultSequence string) ecs.Component {
 	return &CAnimation{
 		tag:             ATAG,
@@ -33,7 +33,7 @@ func NewCAnimation(sequences map[string]*Sequence, defaultSequence string) ecs.C
 	}
 }
 
-// GetCAnimation returns the actual CAnimation struct implmenting the component for a given entity
+// GetCAnimation returns the actual struct implmenting the component for a given entity
 func GetCAnimation(e *ecs.Entity) (*CAnimation, error) {
 	comp, err := e.Query(ATAG)
 	if err != nil {
@@ -42,7 +42,7 @@ func GetCAnimation(e *ecs.Entity) (*CAnimation, error) {
 	return comp.(*CAnimation), nil
 }
 
-// Tag returns the tag for this component
+// Tag getter for tag
 func (an *CAnimation) Tag() string {
 	return an.tag
 }
@@ -59,12 +59,12 @@ func (an *CAnimation) SetSequence(name string) {
 	}
 }
 
-// GetCurrentFrame returns the current sprite for the current sequence
+// GetCurrentFrame returns the frame of the current animation
 func (an *CAnimation) GetCurrentFrame() pixel.Rect {
 	return an.Sequences[an.Current].Frame()
 }
 
-// Sequence struct to hold a sequence in an animation
+// Sequence stores the animation details for a given state of an animation
 type Sequence struct {
 	Frames     []pixel.Rect
 	frame      int

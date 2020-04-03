@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	// CPRTAG const to hold the SCollisionTracker tag
+	// CPRTAG SCollisionTracker tag
 	CPRTAG = "collisionpolyrenderer"
 )
 
-// SCollisionPolyRenderer Sprite Render System
+// SCollisionPolyRenderer stores information for collision poly rendering system
 type SCollisionPolyRenderer struct {
 	tag string
 
@@ -20,7 +20,7 @@ type SCollisionPolyRenderer struct {
 	comps           []string
 }
 
-// NewSCollisionPolyRenderer returns a new sprite render system with a give list of entities attached via a variadic function call
+// NewSCollisionPolyRenderer constructs a SCollisionPolyRenderer from a varidact list of entities
 func NewSCollisionPolyRenderer(es ...*ecs.Entity) (ecs.System, error) {
 	cpr := &SCollisionPolyRenderer{
 		tag:             CPRTAG,
@@ -39,7 +39,7 @@ func (cpr *SCollisionPolyRenderer) GetComponents() []string {
 	return cpr.comps
 }
 
-// Update draws sprite for each associated entity
+// Update draws each active collision polygon
 func (cpr *SCollisionPolyRenderer) Update(args ...interface{}) error {
 	win := args[0].(*pixelgl.Window)
 	for _, e := range cpr.controlEntities {
@@ -64,13 +64,13 @@ func (cpr *SCollisionPolyRenderer) Update(args ...interface{}) error {
 	return nil
 }
 
-// AddEntity adds any number of entities to the keyboard control system via a variadic function call
+// AddEntity adds any number of entities to this system
 func (cpr *SCollisionPolyRenderer) AddEntity(es ...*ecs.Entity) error {
 	cpr.controlEntities = append(cpr.controlEntities, es...)
 	return nil
 }
 
-// RemoveEntity removes any number of entities from the keyboard control system via a variadic function call
+// RemoveEntity removes any number of entities from this system
 func (cpr *SCollisionPolyRenderer) RemoveEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
 		newEntries, err := ecs.StripEntity(cpr.controlEntities, e)
@@ -82,7 +82,7 @@ func (cpr *SCollisionPolyRenderer) RemoveEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// Tag returns the tag for this system
+// Tag getter for tag
 func (cpr *SCollisionPolyRenderer) Tag() string {
 	return cpr.tag
 }

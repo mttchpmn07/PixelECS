@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	// SKCTAG const to hold the SKeyboardController tag
+	// SKCTAG SKeyboardController tag
 	SKCTAG = "keyboardcontroller"
 )
 
@@ -20,7 +20,7 @@ type SKeyboardController struct {
 	comps           []string
 }
 
-// NewSKeyboardController returns a new Keyboard Control System with all given entities attached
+// NewSKeyboardController constructs a SKeyboardController from a varidact list of entities
 func NewSKeyboardController(es ...*ecs.Entity) (ecs.System, error) {
 	cSystem := &SKeyboardController{
 		tag:             SKCTAG,
@@ -73,7 +73,7 @@ func updateKeys(win *pixelgl.Window) {
 
 }
 
-// Update calculates next state for all components used by the system for each of its associated entities
+// Update updates the state of each entity that is controlled by the keyboard
 func (cs *SKeyboardController) Update(args ...interface{}) error {
 	win := args[0].(*pixelgl.Window)
 	dt := (*args[1].(*float64))
@@ -129,7 +129,7 @@ func (cs *SKeyboardController) Update(args ...interface{}) error {
 	return nil
 }
 
-// AddEntity adds any number of entities to the keyboard control system via a variadic function call
+// AddEntity adds any number of entities to this system
 func (cs *SKeyboardController) AddEntity(es ...*ecs.Entity) error {
 	err := ecs.ValidateEntitySystem(cs, es...)
 	if err != nil {
@@ -139,7 +139,7 @@ func (cs *SKeyboardController) AddEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// RemoveEntity removes any number of entities from the keyboard control system via a variadic function call
+// RemoveEntity removes any number of entities from this system
 func (cs *SKeyboardController) RemoveEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
 		newEntries, err := ecs.StripEntity(cs.controlEntities, e)
@@ -151,7 +151,7 @@ func (cs *SKeyboardController) RemoveEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// Tag returns the tag for this system
+// Tag getter for tag
 func (cs *SKeyboardController) Tag() string {
 	return cs.tag
 }

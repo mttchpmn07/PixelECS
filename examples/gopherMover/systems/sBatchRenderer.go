@@ -15,11 +15,6 @@ TODO:
 	If optimization in needed it might be possible by checking for oclusion
 */
 
-const (
-	// BRTAG const to hold the SBatchRenderer tag
-	BRTAG = "batchrenderer"
-)
-
 type drawObject struct {
 	Batch       *pixel.Batch
 	Spritesheet *pixel.Picture
@@ -35,7 +30,12 @@ func (do *drawObject) render() {
 	sprite.Draw(do.Batch, trans.Moved(*do.Loc))
 }
 
-// SBatchRenderer Sprite Render System
+const (
+	// BRTAG SBatchRenderer tag
+	BRTAG = "batchrenderer"
+)
+
+// SBatchRenderer stores information for batch renderer system
 type SBatchRenderer struct {
 	tag string
 
@@ -43,7 +43,7 @@ type SBatchRenderer struct {
 	comps           []string
 }
 
-// NewSBatchRenderer returns a new sprite render system with a give list of entities attached via a variadic function call
+// NewSBatchRenderer constructs a SBatchRenderer from a varidact list of entities
 func NewSBatchRenderer(es ...*ecs.Entity) (ecs.System, error) {
 	br := &SBatchRenderer{
 		tag:             BRTAG,
@@ -67,23 +67,21 @@ func (br *SBatchRenderer) GetComponents() []string {
 	return br.comps
 }
 
-// Update draws sprite for each associated entity
+// Update renders each entity to its batch and draws the batches based on the z value from CLocation
+//sudo code of what is happening here
+//
+//	layers = map layer => []drawObjs
+//	batches = set batch
+//	for entity e
+//		build drawObj(location, rotation, batch, frame)
+//		layers[layer].append(drawObj)
+//	for layer l in sorted layers
+//		for drawObj do in layers[l]
+//			do.Render
+//		for batch b in batches
+//			b.Draw(win)
+//			b.Clear()
 func (br *SBatchRenderer) Update(args ...interface{}) error {
-	/*
-		sudo code of what is happening here
-
-		layers = map layer => []drawObjs
-		batches = set batch
-		for entity e
-			build drawObj(location, rotation, batch, frame)
-			layers[layer].append(drawObj)
-		for layer l in sorted layers
-			for drawObj do in layers[l]
-				do.Render
-			for batch b in batches
-				b.Draw(win)
-				b.Clear()
-	*/
 	win := args[0].(*pixelgl.Window)
 
 	layers := map[int][]*drawObject{}
@@ -145,7 +143,7 @@ func (br *SBatchRenderer) Update(args ...interface{}) error {
 	return nil
 }
 
-// AddEntity adds any number of entities to the keyboard control system via a variadic function call
+// AddEntity adds any number of entities to this system
 func (br *SBatchRenderer) AddEntity(es ...*ecs.Entity) error {
 	err := ecs.ValidateEntitySystem(br, es...)
 	if err != nil {
@@ -155,7 +153,7 @@ func (br *SBatchRenderer) AddEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// RemoveEntity removes any number of entities from the keyboard control system via a variadic function call
+// RemoveEntity removes any number of entities from this system
 func (br *SBatchRenderer) RemoveEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
 		newEntries, err := ecs.StripEntity(br.controlEntities, e)
@@ -167,7 +165,7 @@ func (br *SBatchRenderer) RemoveEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// Tag returns the tag for this system
+// Tag getter for tag
 func (br *SBatchRenderer) Tag() string {
 	return br.tag
 }

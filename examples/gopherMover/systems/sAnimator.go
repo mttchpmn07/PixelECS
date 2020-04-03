@@ -8,11 +8,11 @@ import (
 )
 
 const (
-	// ARTAG const to hold the SRenderer tag
+	// ARTAG SAnimator tag
 	ARTAG = "animator"
 )
 
-// SAnimator Sprite Render System
+// SAnimator stores information for animation system
 type SAnimator struct {
 	tag string
 
@@ -20,7 +20,7 @@ type SAnimator struct {
 	comps           []string
 }
 
-// NewSAnimator returns a new sprite render system with a give list of entities attached via a variadic function call
+// NewSAnimator constructs a SAnimator from a varidact list of entities
 func NewSAnimator(es ...*ecs.Entity) (ecs.System, error) {
 	ar := &SAnimator{
 		tag:             ARTAG,
@@ -42,9 +42,8 @@ func (ar *SAnimator) GetComponents() []string {
 	return ar.comps
 }
 
-// Update draws sprite for each associated entity
+// Update updates the state of each animation
 func (ar *SAnimator) Update(args ...interface{}) error {
-	//win := args[0].(*pixelgl.Window)
 	for _, e := range ar.controlEntities {
 		sp, err := components.GetCProperties(e)
 		if err != nil {
@@ -69,7 +68,7 @@ func (ar *SAnimator) Update(args ...interface{}) error {
 	return nil
 }
 
-// AddEntity adds any number of entities to the keyboard control system via a variadic function call
+// AddEntity adds any number of entities to this system
 func (ar *SAnimator) AddEntity(es ...*ecs.Entity) error {
 	err := ecs.ValidateEntitySystem(ar, es...)
 	if err != nil {
@@ -79,7 +78,7 @@ func (ar *SAnimator) AddEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// RemoveEntity removes any number of entities from the keyboard control system via a variadic function call
+// RemoveEntity removes any number of entities from this system
 func (ar *SAnimator) RemoveEntity(es ...*ecs.Entity) error {
 	for _, e := range es {
 		newEntries, err := ecs.StripEntity(ar.controlEntities, e)
@@ -91,7 +90,7 @@ func (ar *SAnimator) RemoveEntity(es ...*ecs.Entity) error {
 	return nil
 }
 
-// Tag returns the tag for this system
+// Tag getter for tag
 func (ar *SAnimator) Tag() string {
 	return ar.tag
 }

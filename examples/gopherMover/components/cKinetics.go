@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	// KTAG const to hold the Location tag
+	// KTAG CKenetics
 	KTAG = "kenetics"
 )
 
@@ -23,7 +23,8 @@ type CKenetics struct {
 	Acceleration    pixel.Vec
 }
 
-// NewCKenetics returns a new CKenetics component with a given starting speed and angularVelocity
+// NewCKenetics constructs a CKenetics component from a starting speed, angularVelocity,
+// acceleration magnitude, velocity vector, and acceleration vector
 func NewCKenetics(speed, av, accMag float64, vel, acc pixel.Vec) ecs.Component {
 	return &CKenetics{
 		tag:             KTAG,
@@ -35,7 +36,7 @@ func NewCKenetics(speed, av, accMag float64, vel, acc pixel.Vec) ecs.Component {
 	}
 }
 
-// GetCKenetics returns the actual CKenetics struct implmenting the component for a given entity
+// GetCKenetics returns the struct implmenting the component for a given entity
 func GetCKenetics(e *ecs.Entity) (*CKenetics, error) {
 	comp, err := e.Query(KTAG)
 	if err != nil {
@@ -44,7 +45,7 @@ func GetCKenetics(e *ecs.Entity) (*CKenetics, error) {
 	return comp.(*CKenetics), nil
 }
 
-// Tag returns the tag for this component
+// Tag getter for tag
 func (k *CKenetics) Tag() string {
 	return k.tag
 }

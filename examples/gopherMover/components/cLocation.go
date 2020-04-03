@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	// LTAG const to hold the Location tag
+	// LTAG CLocation tag
 	LTAG = "location"
 )
 
@@ -19,7 +19,8 @@ type CLocation struct {
 	Z   int
 }
 
-// NewCLocation returns a new CLocation component with a given starting x and y
+// NewCLocation constructs a CLocation component with a given starting x, y, and z.
+// The x and y are floating points, while the z is an integers used to determine the drawing order.
 func NewCLocation(x, y float64, z int) ecs.Component {
 	return &CLocation{
 		tag: LTAG,
@@ -28,7 +29,7 @@ func NewCLocation(x, y float64, z int) ecs.Component {
 	}
 }
 
-// GetCLocation returns the actual CLocation struct for a given entity
+// GetCLocation returns the actual struct implmenting the component for a given entity
 func GetCLocation(e *ecs.Entity) (*CLocation, error) {
 	comp, err := e.Query(LTAG)
 	if err != nil {
@@ -37,7 +38,7 @@ func GetCLocation(e *ecs.Entity) (*CLocation, error) {
 	return comp.(*CLocation), nil
 }
 
-// Tag returns the tag for this component
+// Tag getter for tag
 func (l *CLocation) Tag() string {
 	return l.tag
 }

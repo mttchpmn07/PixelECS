@@ -8,18 +8,18 @@ import (
 )
 
 const (
-	// BATAG const to hold the Location tag
+	// BATAG CBatchAsset tag
 	BATAG = "batchasset"
 )
 
-// CBatchAsset component for storing a sprite sheet and draw batch
+// CBatchAsset component for storing a spritesheet and draw batch
 type CBatchAsset struct {
 	tag         string
 	Spritesheet pixel.Picture
 	Batch       *pixel.Batch
 }
 
-// NewCBatchAsset returns a new CBatchAsset component with a given starting x and y
+// NewCBatchAsset constructs a CBatchAsset from a filename to the spritesheet
 func NewCBatchAsset(filename string) (ecs.Component, error) {
 	spritesheet, err := loadPicture(filename)
 	if err != nil {
@@ -33,7 +33,7 @@ func NewCBatchAsset(filename string) (ecs.Component, error) {
 	}, nil
 }
 
-// GetCBatchAsset returns the actual CBatchAsset struct for a given entity
+// GetCBatchAsset returns the actual struct implmenting the component for a given entity
 func GetCBatchAsset(e *ecs.Entity) (*CBatchAsset, error) {
 	comp, err := e.Query(BATAG)
 	if err != nil {
@@ -42,7 +42,7 @@ func GetCBatchAsset(e *ecs.Entity) (*CBatchAsset, error) {
 	return comp.(*CBatchAsset), nil
 }
 
-// Tag returns the tag for this component
+// Tag getter for tag
 func (ba *CBatchAsset) Tag() string {
 	return ba.tag
 }
