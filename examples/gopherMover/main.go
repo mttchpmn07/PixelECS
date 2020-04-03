@@ -144,7 +144,7 @@ func buildWindow() (pixelgl.WindowConfig, *pixelgl.Window) {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Sprite Render Test",
 		Bounds: pixel.R(0, 0, width, height),
-		//VSync:  true,
+		VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
 	if err != nil {
@@ -174,16 +174,7 @@ func run() {
 		panic(err)
 	}
 	win.SetSmooth(true)
-	/*
-		gopherAssets := []string{
-			"assets/hiking.png",
-			"assets/party.png",
-			"assets/theif.png",
-			"assets/slacker.png",
-			"assets/nerdy.png",
-			"assets/dragon.png",
-		}
-	*/
+
 	gopher := createGophers("assets/dragon_animated.png")
 	flys := createFlys(5, "assets/bug.png")
 	buildSystems(gopher, flys)
@@ -211,26 +202,4 @@ func run() {
 
 func main() {
 	pixelgl.Run(run)
-	/*
-		posA := components.NewCLocation(0, 0, 0)
-		posB := components.NewCLocation(0, 0, 0)
-		polyA := components.NewCCollisionPoly(
-			posA.(*components.CLocation),
-			pixel.V(1, 3.5),
-			pixel.V(2, 4.5),
-			pixel.V(6.5, 6),
-			pixel.V(6.5, 3),
-			pixel.V(5.5, 1)).(*components.CCollisionPoly)
-		polyB := components.NewCCollisionPoly(
-			posB.(*components.CLocation),
-			pixel.V(1.5, 6),
-			pixel.V(3.5, 9),
-			pixel.V(9, 10),
-			pixel.V(7.5, 4)).(*components.CCollisionPoly)
-		vel := pixel.V(0.5, 0)
-		for i := 0; i < 20; i++ {
-			fmt.Println(i, polyA.Collides(polyB), posA.(*components.CLocation).Loc)
-			posA.(*components.CLocation).Loc = posA.(*components.CLocation).Loc.Add(vel)
-		}
-	*/
 }
