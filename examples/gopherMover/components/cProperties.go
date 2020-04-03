@@ -19,16 +19,18 @@ type CProperties struct {
 	Scale  float64
 	Bounds pixel.Rect
 	Active bool
+	Class  string
 }
 
 // NewCProperties returns a new CSpriteProperties component with a given angle, scale, and sprite bounds (requires input of sprite component)
-func NewCProperties(angle, scale float64, bounds pixel.Rect, active bool) ecs.Component {
+func NewCProperties(angle, scale float64, bounds pixel.Rect, active bool, class string) ecs.Component {
 	return &CProperties{
 		tag:    SPTAG,
 		Angle:  angle,
 		Scale:  scale,
 		Bounds: bounds,
 		Active: active,
+		Class:  class,
 	}
 }
 

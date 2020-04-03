@@ -45,11 +45,18 @@ func (ct *SCollisionTracker) Update(args ...interface{}) error {
 	//win := args[0].(*pixelgl.Window)
 	for _, e1 := range ct.controlEntities {
 		for _, e2 := range ct.controlEntities {
-			sp, err := components.GetCProperties(e2)
+			if e1 == e2 {
+				continue
+			}
+			sp1, err := components.GetCProperties(e1)
 			if err != nil {
 				return err
 			}
-			if e1 == e2 || (e1.Class != "gopher" && e2.Class != "fly") || !sp.Active {
+			sp2, err := components.GetCProperties(e2)
+			if err != nil {
+				return err
+			}
+			if sp1.Class != "gopher" || sp2.Class != "fly" || !sp1.Active || !sp2.Active {
 				continue
 			}
 			e1CP, err := components.GetCCollisionPoly(e1)
@@ -61,7 +68,7 @@ func (ct *SCollisionTracker) Update(args ...interface{}) error {
 				return err
 			}
 			if e1CP.Collides(e2CP) {
-				sp.Active = false
+				sp2.Active = false
 			}
 		}
 	}

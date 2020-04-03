@@ -10,7 +10,7 @@ import (
 
 // NewFly creates a new animated fly
 func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAsset) (*ecs.Entity, error) {
-	fly, err := ecs.NewEntity("fly")
+	fly, err := ecs.NewEntity()
 	if err != nil {
 		return nil, err
 	}
@@ -62,7 +62,7 @@ func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAs
 	}
 
 	bounds := an.(*components.CAnimation).GetCurrentFrame()
-	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds, true)
+	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds, true, "fly")
 	err = fly.Add(sp)
 	if err != nil {
 		return nil, err

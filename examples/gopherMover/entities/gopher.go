@@ -8,7 +8,7 @@ import (
 
 // NewGopher creates a new gopher with a given sprite loaded from a png file and a starting x and y
 func NewGopher(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAsset) (*ecs.Entity, error) {
-	gopher, err := ecs.NewEntity("gopher")
+	gopher, err := ecs.NewEntity()
 	if err != nil {
 		return nil, err
 	}
@@ -67,7 +67,7 @@ func NewGopher(winWidth, winHeight, spriteWidth float64, asset *components.CBatc
 	}
 
 	bounds := an.(*components.CAnimation).GetCurrentFrame()
-	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds, true)
+	sp := components.NewCProperties(0, spriteWidth/bounds.W(), bounds, true, "gopher")
 	err = gopher.Add(sp)
 	if err != nil {
 		return nil, err

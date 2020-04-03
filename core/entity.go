@@ -8,12 +8,11 @@ import (
 
 // Entity basic entity struct (litterally just an id to find components with)
 type Entity struct {
-	ID    uuid.UUID
-	Class string
+	ID uuid.UUID
 }
 
 // NewEntity returns a blank entity with a randomly generated ID
-func NewEntity(class string) (*Entity, error) {
+func NewEntity() (*Entity, error) {
 	ID, err := uuid.NewUUID()
 	if err != nil {
 		return nil, err
@@ -29,8 +28,7 @@ func NewEntity(class string) (*Entity, error) {
 	}
 	components[ID] = []*Component{}
 	return &Entity{
-		ID:    ID,
-		Class: class,
+		ID: ID,
 	}, nil
 }
 
