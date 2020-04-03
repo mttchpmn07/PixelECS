@@ -4,7 +4,7 @@ import (
 	"time"
 
 	ecs "github.com/mttchpmn07/PixelECS/core"
-	"github.com/mttchpmn07/PixelECS/gopherMover/components"
+	"github.com/mttchpmn07/PixelECS/gopherFlyer/components"
 )
 
 const (

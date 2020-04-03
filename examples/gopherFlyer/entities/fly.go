@@ -5,7 +5,7 @@ import (
 
 	"github.com/faiface/pixel"
 	ecs "github.com/mttchpmn07/PixelECS/core"
-	"github.com/mttchpmn07/PixelECS/gopherMover/components"
+	"github.com/mttchpmn07/PixelECS/gopherFlyer/components"
 )
 
 // NewFly creates a new animated fly

@@ -3,7 +3,7 @@ package entities
 import (
 	"github.com/faiface/pixel"
 	ecs "github.com/mttchpmn07/PixelECS/core"
-	"github.com/mttchpmn07/PixelECS/gopherMover/components"
+	"github.com/mttchpmn07/PixelECS/gopherFlyer/components"
 )
 
 // NewGopher creates a new gopher with a given sprite loaded from a png file and a starting x and y

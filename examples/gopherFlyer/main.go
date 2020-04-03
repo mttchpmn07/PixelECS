@@ -10,9 +10,9 @@ import (
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	ecs "github.com/mttchpmn07/PixelECS/core"
-	"github.com/mttchpmn07/PixelECS/gopherMover/components"
-	"github.com/mttchpmn07/PixelECS/gopherMover/entities"
-	"github.com/mttchpmn07/PixelECS/gopherMover/systems"
+	"github.com/mttchpmn07/PixelECS/gopherFlyer/components"
+	"github.com/mttchpmn07/PixelECS/gopherFlyer/entities"
+	"github.com/mttchpmn07/PixelECS/gopherFlyer/systems"
 	"golang.org/x/image/colornames"
 )
 

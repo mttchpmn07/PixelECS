@@ -1,4 +1,4 @@
-module github.com/mttchpmn07/PixelECS/gopherMover
+module github.com/mttchpmn07/PixelECS/gopherFlyer
 
 go 1.14
 
