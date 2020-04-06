@@ -58,6 +58,13 @@ func createWalls() []*ecs.Entity {
 	}
 	walls = append(walls, wall)
 
+	// top wall
+	wall, err = entities.NewWall(width/2, height-5, width, 10)
+	if err != nil {
+		panic(err)
+	}
+	walls = append(walls, wall)
+
 	return walls
 }
 
@@ -140,15 +147,15 @@ func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity, walls []*ecs.Entity) {
 		panic(err)
 	}
 
-	collisionSystem, err := systems.NewSCollisionTracker(flys...)
-	if err != nil {
-		panic(err)
-	}
-	err = collisionSystem.AddEntity(gopher)
+	collisionSystem, err := systems.NewSCollisionTracker(width, height, flys...)
 	if err != nil {
 		panic(err)
 	}
 	err = collisionSystem.AddEntity(walls...)
+	if err != nil {
+		panic(err)
+	}
+	err = collisionSystem.AddEntity(gopher)
 	if err != nil {
 		panic(err)
 	}
@@ -231,7 +238,7 @@ func run() {
 
 	walls := createWalls()
 	gopher := createGophers("assets/dragon_animated.png")
-	flys := createFlys(5, "assets/bug.png")
+	flys := createFlys(300, "assets/bug.png")
 	buildSystems(gopher, flys, walls)
 
 	frames := 0

@@ -146,3 +146,7 @@ func (cp *polygon) Render() *imdraw.IMDraw {
 	poly.Polygon(2)
 	return poly
 }
+
+func (cp *polygon) String() string {
+	return fmt.Sprintf("%v : %v", cp.anchor.Loc, cp.points)
+}
