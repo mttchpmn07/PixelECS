@@ -25,14 +25,15 @@ func NewGopher(winWidth, winHeight, spriteWidth float64, asset *components.CBatc
 	}
 
 	cLoc := loc.(*components.CLocation)
-	poly := components.NewCCollisionPoly(
+	poly := components.NewPolygon(
 		cLoc,
 		pixel.V(spriteWidth/4, 3*spriteWidth/8),
 		pixel.V(spriteWidth/4, -3*spriteWidth/8),
 		pixel.V(-spriteWidth/4, -3*spriteWidth/8),
 		pixel.V(-spriteWidth/4, 3*spriteWidth/8),
 	)
-	err = gopher.Add(poly)
+	collision := components.NewCCollisionShape(poly)
+	err = gopher.Add(collision)
 	if err != nil {
 		return nil, err
 	}

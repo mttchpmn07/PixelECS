@@ -50,7 +50,7 @@ func init() {
 
 // Update calculates next state for the systems entities
 func (rw *SRandomWalk) Update(args ...interface{}) error {
-	dt := (*args[1].(*float64))
+	//dt := (*args[1].(*float64))
 
 	for _, e := range rw.controlEntities {
 		sp, err := components.GetCProperties(e)
@@ -60,19 +60,21 @@ func (rw *SRandomWalk) Update(args ...interface{}) error {
 		if !sp.Active {
 			continue
 		}
-		loc, err := components.GetCLocation(e)
-		if err != nil {
-			return err
-		}
+		/*
+			loc, err := components.GetCLocation(e)
+			if err != nil {
+				return err
+			}
+		*/
 		kin, err := components.GetCKenetics(e)
 		if err != nil {
 			return err
 		}
 		kin.Acceleration = pixel.V((rand.Float64() - 0.5), (rand.Float64() - 0.5)).Unit().Scaled(kin.AccMag)
-		kin.Velocity = kin.Velocity.Add(kin.Acceleration.Scaled(0.5 * dt)).Unit().Scaled(kin.Speed)
-		kin.Velocity.X += kin.Acceleration.X * 0.5 * dt
-		kin.Velocity.Y += kin.Acceleration.Y * 0.5 * dt
-		loc.Loc = loc.Loc.Add(kin.Velocity.Scaled(dt))
+		//kin.Velocity = kin.Velocity.Add(kin.Acceleration.Scaled(0.5 * dt)).Unit().Scaled(kin.Speed)
+		//kin.Velocity.X += kin.Acceleration.X * 0.5 * dt
+		//kin.Velocity.Y += kin.Acceleration.Y * 0.5 * dt
+		//loc.Loc = loc.Loc.Add(kin.Velocity.Scaled(dt))
 	}
 	return nil
 }

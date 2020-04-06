@@ -34,6 +34,33 @@ func loadPicture(path string) (pixel.Picture, error) {
 	return pixel.PictureDataFromImage(img), nil
 }
 
+func createWalls() []*ecs.Entity {
+	walls := []*ecs.Entity{}
+
+	// right wall
+	wall, err := entities.NewWall(width-5, height/2, 10, height)
+	if err != nil {
+		panic(err)
+	}
+	walls = append(walls, wall)
+
+	// left wall
+	wall, err = entities.NewWall(5, height/2, 10, height)
+	if err != nil {
+		panic(err)
+	}
+	walls = append(walls, wall)
+
+	// bottom wall
+	wall, err = entities.NewWall(width/2, 5, width, 10)
+	if err != nil {
+		panic(err)
+	}
+	walls = append(walls, wall)
+
+	return walls
+}
+
 func createGophers(gopherAsset string) *ecs.Entity {
 	ba, err := components.NewCBatchAsset(gopherAsset)
 	if err != nil {
@@ -64,7 +91,7 @@ func createFlys(num int, flyAsset string) []*ecs.Entity {
 	return flys
 }
 
-func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity) {
+func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity, walls []*ecs.Entity) {
 	// Random Walk System
 	randoWalkSystem, err := systems.NewSRandomWalk(flys...)
 	if err != nil {
@@ -121,6 +148,10 @@ func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity) {
 	if err != nil {
 		panic(err)
 	}
+	err = collisionSystem.AddEntity(walls...)
+	if err != nil {
+		panic(err)
+	}
 	err = ecs.RegisterSystem(collisionSystem)
 	if err != nil {
 		panic(err)
@@ -134,7 +165,30 @@ func buildSystems(gopher *ecs.Entity, flys []*ecs.Entity) {
 	if err != nil {
 		panic(err)
 	}
+	err = collisionRenderSystem.AddEntity(walls...)
+	if err != nil {
+		panic(err)
+	}
 	err = ecs.RegisterSystem(collisionRenderSystem)
+	if err != nil {
+		panic(err)
+	}
+
+	physicsSystem, err := systems.NewSPhysics(flys...)
+	if err != nil {
+		panic(err)
+	}
+	/*
+		err = collisionRenderSystem.AddEntity(gopher)
+		if err != nil {
+			panic(err)
+		}
+		err = collisionRenderSystem.AddEntity(walls...)
+		if err != nil {
+			panic(err)
+		}
+	*/
+	err = ecs.RegisterSystem(physicsSystem)
 	if err != nil {
 		panic(err)
 	}
@@ -144,13 +198,13 @@ func buildWindow() (pixelgl.WindowConfig, *pixelgl.Window) {
 	cfg := pixelgl.WindowConfig{
 		Title:  "Sprite Render Test",
 		Bounds: pixel.R(0, 0, width, height),
-		VSync:  true,
+		//VSync:  true,
 	}
 	win, err := pixelgl.NewWindow(cfg)
 	if err != nil {
 		panic(err)
 	}
-	win.SetSmooth(true)
+	//win.SetSmooth(true)
 	return cfg, win
 }
 
@@ -165,7 +219,7 @@ func updateFPS(win *pixelgl.Window, cfg pixelgl.WindowConfig, frames int, second
 func run() {
 	//cfg, win := buildWindow()
 	cfg := pixelgl.WindowConfig{
-		Title:  "Sprite Render Test",
+		Title:  "GopherPlatformer",
 		Bounds: pixel.R(0, 0, width, height),
 		VSync:  true,
 	}
@@ -175,9 +229,10 @@ func run() {
 	}
 	win.SetSmooth(true)
 
+	walls := createWalls()
 	gopher := createGophers("assets/dragon_animated.png")
 	flys := createFlys(5, "assets/bug.png")
-	buildSystems(gopher, flys)
+	buildSystems(gopher, flys, walls)
 
 	frames := 0
 	second := time.Tick(time.Second)

@@ -1,7 +1,6 @@
 package systems
 
 import (
-	"github.com/faiface/pixel/imdraw"
 	"github.com/faiface/pixel/pixelgl"
 	ecs "github.com/mttchpmn07/PixelECS/core"
 	"github.com/mttchpmn07/PixelECS/gopherPlatformer/components"
@@ -25,7 +24,7 @@ func NewSCollisionPolyRenderer(es ...*ecs.Entity) (ecs.System, error) {
 	cpr := &SCollisionPolyRenderer{
 		tag:             CPRTAG,
 		controlEntities: []*ecs.Entity{},
-		comps:           []string{components.CPTAG},
+		comps:           []string{components.CSTAG},
 	}
 	err := cpr.AddEntity(es...)
 	if err != nil {
@@ -50,15 +49,11 @@ func (cpr *SCollisionPolyRenderer) Update(args ...interface{}) error {
 		if !sp.Active {
 			continue
 		}
-		cp, err := components.GetCCollisionPoly(e)
+		cp, err := components.GetCCollisionShape(e)
 		if err != nil {
 			return err
 		}
-		poly := imdraw.New(nil)
-		for _, p := range cp.Points {
-			poly.Push(p.Add(cp.Anchor.Loc))
-		}
-		poly.Polygon(2)
+		poly := cp.Render()
 		poly.Draw(win)
 	}
 	return nil

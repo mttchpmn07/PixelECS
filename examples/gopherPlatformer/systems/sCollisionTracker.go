@@ -1,6 +1,8 @@
 package systems
 
 import (
+	"fmt"
+
 	ecs "github.com/mttchpmn07/PixelECS/core"
 	"github.com/mttchpmn07/PixelECS/gopherPlatformer/components"
 )
@@ -24,7 +26,7 @@ func NewSCollisionTracker(es ...*ecs.Entity) (ecs.System, error) {
 		tag:             CTTAG,
 		controlEntities: []*ecs.Entity{},
 		comps: []string{
-			components.CPTAG,
+			components.CSTAG,
 			components.SPTAG,
 		},
 	}
@@ -45,9 +47,6 @@ func (ct *SCollisionTracker) Update(args ...interface{}) error {
 	//win := args[0].(*pixelgl.Window)
 	for _, e1 := range ct.controlEntities {
 		for _, e2 := range ct.controlEntities {
-			if e1 == e2 {
-				continue
-			}
 			sp1, err := components.GetCProperties(e1)
 			if err != nil {
 				return err
@@ -56,19 +55,35 @@ func (ct *SCollisionTracker) Update(args ...interface{}) error {
 			if err != nil {
 				return err
 			}
-			if sp1.Class != "gopher" || sp2.Class != "fly" || !sp1.Active || !sp2.Active {
+			if e1 == e2 || !sp1.Active || !sp2.Active {
 				continue
 			}
-			e1CP, err := components.GetCCollisionPoly(e1)
+			e1CP, err := components.GetCCollisionShape(e1)
 			if err != nil {
 				return err
 			}
-			e2CP, err := components.GetCCollisionPoly(e2)
+			e2CP, err := components.GetCCollisionShape(e2)
 			if err != nil {
 				return err
 			}
-			if e1CP.Collides(e2CP) {
-				sp2.Active = false
+			if sp1.Class == "gopher" && sp2.Class == "fly" {
+				if e1CP.Collides(e2CP) {
+					sp2.Active = false
+				}
+			}
+			if sp1.Class == "gopher" && sp2.Class == "wall" {
+				if e1CP.Collides(e2CP) {
+					// gopher hit a wall
+					// here is where I need to actually split this off into its own system ...
+					fmt.Println("gopher hit the wall")
+				}
+			}
+			if sp1.Class == "fly" && sp2.Class == "wall" {
+				if e1CP.Collides(e2CP) {
+					// gopher hit a wall
+					// here is where I need to actually split this off into its own system ...
+					fmt.Println("fly hit the wall")
+				}
 			}
 		}
 	}

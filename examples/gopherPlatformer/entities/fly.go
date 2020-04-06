@@ -29,14 +29,15 @@ func NewFly(winWidth, winHeight, spriteWidth float64, asset *components.CBatchAs
 	}
 
 	cLoc := loc.(*components.CLocation)
-	poly := components.NewCCollisionPoly(
+	poly := components.NewPolygon(
 		cLoc,
 		pixel.V(spriteWidth/2, spriteWidth/2),
 		pixel.V(spriteWidth/2, -spriteWidth/2),
 		pixel.V(-spriteWidth/2, -spriteWidth/2),
 		pixel.V(-spriteWidth/2, spriteWidth/2),
 	)
-	err = fly.Add(poly)
+	collision := components.NewCCollisionShape(poly)
+	err = fly.Add(collision)
 	if err != nil {
 		return nil, err
 	}
