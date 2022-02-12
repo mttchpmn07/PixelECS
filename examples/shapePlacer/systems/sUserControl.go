@@ -1,10 +1,9 @@
 package systems
 
 import (
-	"fmt"
-
 	"github.com/faiface/pixel/pixelgl"
 	ecs "github.com/mttchpmn07/PixelECS/core"
+	"github.com/mttchpmn07/PixelECS/messenger"
 )
 
 // SUsuerControl stores information for batch renderer system
@@ -13,16 +12,19 @@ type SUsuerControl struct {
 
 	controlEntities []*ecs.Entity
 	comps           []string
+	m               messenger.Messenger
 }
 
 // NewSUsuerControl constructs a SUsuerControl from a varidact list of entities
-func NewSUsuerControl(es ...*ecs.Entity) (ecs.System, error) {
+func NewSUsuerControl(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, error) {
 	uc := &SUsuerControl{
 		tag:             UCTAG,
 		controlEntities: []*ecs.Entity{},
 		comps:           []string{},
+		m:               m,
 	}
 	err := uc.AddEntity(es...)
+
 	if err != nil {
 		return nil, err
 	}
@@ -59,9 +61,8 @@ func init() {
 
 func updateKeys(win *pixelgl.Window) {
 	for _, key := range keys {
-		keyBools[key] = win.Pressed(key)
+		keyBools[key] = win.JustPressed(key)
 	}
-
 }
 
 func (uc *SUsuerControl) Update(args ...interface{}) error {
@@ -70,7 +71,7 @@ func (uc *SUsuerControl) Update(args ...interface{}) error {
 	updateKeys(win)
 
 	if keyBools[pixelgl.MouseButton1] {
-		fmt.Println(win.MousePosition())
+		uc.m.Broadcast("userLeftClick", win.MousePosition())
 	}
 
 	return nil

@@ -5,7 +5,7 @@ go 1.17
 require (
 	github.com/Tarliton/collision2d v0.1.0
 	github.com/faiface/pixel v0.10.0
-	github.com/mttchpmn07/PixelECS/core v0.0.0-20200406015253-6f48d11d0f4f
+	github.com/mttchpmn07/PixelECS/core v0.0.0-20220212055955-833ac4de0a2e
 	golang.org/x/image v0.0.0-20211028202545-6944b10bf410
 )
 

@@ -14,6 +14,7 @@ import (
 	"github.com/mttchpmn07/PixelECS/shapePlacer/systems"
 
 	ecs "github.com/mttchpmn07/PixelECS/core"
+	"github.com/mttchpmn07/PixelECS/messenger"
 )
 
 const (
@@ -21,9 +22,9 @@ const (
 	height = 600
 )
 
-func buildSystems() {
+func buildSystems(m messenger.Messenger) {
 	// Batch renderer system
-	renderSystem, err := systems.NewSRender()
+	renderSystem, err := systems.NewSRender(m)
 	if err != nil {
 		panic(err)
 	}
@@ -42,7 +43,7 @@ func buildSystems() {
 		panic(err)
 	}
 	// User Control System
-	controlSystem, err := systems.NewSUsuerControl()
+	controlSystem, err := systems.NewSUsuerControl(m)
 	if err != nil {
 		panic(err)
 	}
@@ -72,7 +73,8 @@ func run() {
 	}
 	win.SetSmooth(true)
 
-	buildSystems()
+	m := messenger.NewMessenger()
+	buildSystems(m)
 
 	frames := 0
 	second := time.Tick(time.Second)
