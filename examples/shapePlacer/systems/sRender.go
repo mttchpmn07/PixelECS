@@ -20,6 +20,7 @@ type SRender struct {
 	controlEntities []*ecs.Entity
 	comps           []string
 	m               messenger.Messenger
+	callbacks       map[string]func(contents interface{})
 }
 
 // NewSRender constructs a SRender from a varidact list of entities
@@ -31,20 +32,23 @@ func NewSRender(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, error) {
 			components.RPTAG,
 			components.STAG,
 		},
-		m: m,
+		m:         m,
+		callbacks: map[string]func(contents interface{}){},
 	}
+	br.callbacks["addShape"] = br.addShapeCallback
+	br.m.Subscribe("addShape", br)
 	err := br.AddEntity(es...)
-	m.Subscribe("userLeftClick", userRightClickCallback)
+
 	if err != nil {
 		return nil, err
 	}
 	return br, nil
 }
 
-func userRightClickCallback(content interface{}) {
-	vec := content.(pixel.Vec)
-	fmt.Printf("User Left Clicked at %v", vec)
-
+func (r *SRender) addShapeCallback(content interface{}) {
+	newShape := content.(*ecs.Entity)
+	fmt.Println(newShape)
+	r.AddEntity(newShape)
 }
 
 // GetComponents returns the nessary components for an entity to be used in this system
@@ -111,4 +115,8 @@ func (r *SRender) RemoveEntity(es ...*ecs.Entity) error {
 // Tag getter for tag
 func (r *SRender) Tag() string {
 	return r.tag
+}
+
+func (r *SRender) HandleBroadcast(key string, content interface{}) {
+	r.callbacks[key](content)
 }

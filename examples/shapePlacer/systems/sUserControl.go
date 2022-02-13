@@ -13,6 +13,7 @@ type SUsuerControl struct {
 	controlEntities []*ecs.Entity
 	comps           []string
 	m               messenger.Messenger
+	callbacks       map[string]func(contents interface{})
 }
 
 // NewSUsuerControl constructs a SUsuerControl from a varidact list of entities
@@ -22,6 +23,7 @@ func NewSUsuerControl(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, err
 		controlEntities: []*ecs.Entity{},
 		comps:           []string{},
 		m:               m,
+		callbacks:       map[string]func(contents interface{}){},
 	}
 	err := uc.AddEntity(es...)
 
@@ -71,7 +73,7 @@ func (uc *SUsuerControl) Update(args ...interface{}) error {
 	updateKeys(win)
 
 	if keyBools[pixelgl.MouseButton1] {
-		uc.m.Broadcast("userLeftClick", win.MousePosition())
+		uc.m.Broadcast("createShape", win.MousePosition())
 	}
 
 	return nil
@@ -102,4 +104,8 @@ func (uc *SUsuerControl) RemoveEntity(es ...*ecs.Entity) error {
 // Tag getter for tag
 func (uc *SUsuerControl) Tag() string {
 	return uc.tag
+}
+
+func (uc *SUsuerControl) HandleBroadcast(key string, content interface{}) {
+	uc.callbacks[key](content)
 }

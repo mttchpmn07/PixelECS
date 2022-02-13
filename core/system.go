@@ -13,7 +13,6 @@ type System interface {
 	AddEntity(es ...*Entity) error
 	RemoveEntity(es ...*Entity) error
 	GetComponents() []string
-	Callback(key string, content interface{})
 	Tag() string
 }
 

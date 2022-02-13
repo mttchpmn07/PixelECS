@@ -5,12 +5,10 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/Tarliton/collision2d"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 
-	"github.com/mttchpmn07/PixelECS/shapePlacer/entities"
 	"github.com/mttchpmn07/PixelECS/shapePlacer/systems"
 
 	ecs "github.com/mttchpmn07/PixelECS/core"
@@ -33,15 +31,15 @@ func buildSystems(m messenger.Messenger) {
 		panic(err)
 	}
 
-	square, err := entities.NewSquare(collision2d.NewVector(width/2, height/2), 0, 100)
+	shapePlacerSystem, err := systems.NewSShapePlacer(m)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(shapePlacerSystem)
 	if err != nil {
 		panic(err)
 	}
 
-	err = renderSystem.AddEntity(square)
-	if err != nil {
-		panic(err)
-	}
 	// User Control System
 	controlSystem, err := systems.NewSUsuerControl(m)
 	if err != nil {
