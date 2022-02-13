@@ -1,8 +1,6 @@
 package systems
 
 import (
-	"fmt"
-
 	"github.com/Tarliton/collision2d"
 	"github.com/faiface/pixel"
 	ecs "github.com/mttchpmn07/PixelECS/core"
@@ -47,7 +45,6 @@ func NewSShapePlacer(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, erro
 
 func (sp *SShapePlacer) createShapeCallback(content interface{}) {
 	vec := content.(pixel.Vec)
-	fmt.Printf("User Left Clicked at %v", vec)
 
 	square, err := entities.NewSquare(collision2d.NewVector(vec.X, vec.Y), 0, 100)
 	if err != nil {
@@ -66,7 +63,6 @@ func (sp *SShapePlacer) Update(args ...interface{}) error {
 	//dt := (*args[1].(*float64))
 
 	for _, s := range shapeQue {
-		fmt.Println(s)
 		sp.m.Broadcast("addShape", s)
 	}
 	shapeQue = shapeQue[:0]

@@ -20,7 +20,24 @@ const (
 	height = 600
 )
 
-func buildSystems(m messenger.Messenger) {
+func buildWindow(title string) *pixelgl.Window {
+	cfg := pixelgl.WindowConfig{
+		Title:  title,
+		Bounds: pixel.R(0, 0, width, height),
+		VSync:  true,
+	}
+	win, err := pixelgl.NewWindow(cfg)
+	if err != nil {
+		panic(err)
+	}
+	win.SetSmooth(true)
+	return win
+}
+
+func buildSystems() {
+	// Create messenger
+	m := messenger.NewMessenger()
+
 	// Batch renderer system
 	renderSystem, err := systems.NewSRender(m)
 	if err != nil {
@@ -51,28 +68,19 @@ func buildSystems(m messenger.Messenger) {
 	}
 }
 
-func updateFPS(win *pixelgl.Window, cfg pixelgl.WindowConfig, frames int, second <-chan time.Time) {
+func updateFPS(win *pixelgl.Window, title string, frames int, second <-chan time.Time) {
 	select {
 	case <-second:
-		win.SetTitle(fmt.Sprintf("%s | FPS: %d", cfg.Title, frames))
+		win.SetTitle(fmt.Sprintf("%s | FPS: %d", title, frames))
 	default:
 	}
 }
 
 func run() {
-	cfg := pixelgl.WindowConfig{
-		Title:  "Shape Placer",
-		Bounds: pixel.R(0, 0, width, height),
-		VSync:  true,
-	}
-	win, err := pixelgl.NewWindow(cfg)
-	if err != nil {
-		panic(err)
-	}
-	win.SetSmooth(true)
+	title := "Shape Placer"
 
-	m := messenger.NewMessenger()
-	buildSystems(m)
+	win := buildWindow(title)
+	buildSystems()
 
 	frames := 0
 	second := time.Tick(time.Second)
@@ -85,13 +93,13 @@ func run() {
 
 		win.Clear(colornames.Skyblue)
 
-		err = ecs.UpdateSystems(win, &dt)
+		err := ecs.UpdateSystems(win, &dt)
 		if err != nil {
 			panic(err)
 		}
 		win.Update()
 
-		updateFPS(win, cfg, frames, second)
+		updateFPS(win, title, frames, second)
 		frames++
 	}
 }

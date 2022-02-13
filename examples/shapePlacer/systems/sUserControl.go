@@ -110,7 +110,3 @@ func (uc *SUsuerControl) RemoveEntity(es ...*ecs.Entity) error {
 func (uc *SUsuerControl) Tag() string {
 	return uc.tag
 }
-
-func (uc *SUsuerControl) HandleBroadcast(key string, content interface{}) {
-	uc.callbacks[key](content)
-}

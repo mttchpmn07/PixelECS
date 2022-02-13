@@ -1,8 +1,6 @@
 package systems
 
 import (
-	"fmt"
-
 	"github.com/Tarliton/collision2d"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
@@ -46,9 +44,7 @@ func NewSRender(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, error) {
 }
 
 func (r *SRender) addShapeCallback(content interface{}) {
-	newShape := content.(*ecs.Entity)
-	fmt.Println(newShape)
-	r.AddEntity(newShape)
+	r.AddEntity(content.(*ecs.Entity))
 }
 
 // GetComponents returns the nessary components for an entity to be used in this system
