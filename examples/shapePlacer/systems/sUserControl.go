@@ -1,6 +1,8 @@
 package systems
 
 import (
+	"log"
+
 	"github.com/faiface/pixel/pixelgl"
 	ecs "github.com/mttchpmn07/PixelECS/core"
 	"github.com/mttchpmn07/PixelECS/messenger"
@@ -73,7 +75,10 @@ func (uc *SUsuerControl) Update(args ...interface{}) error {
 	updateKeys(win)
 
 	if keyBools[pixelgl.MouseButton1] {
-		uc.m.Broadcast("createShape", win.MousePosition())
+		err := uc.m.Broadcast("createShape", win.MousePosition())
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	return nil

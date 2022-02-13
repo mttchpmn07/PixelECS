@@ -1,6 +1,6 @@
 package messenger
 
-import "log"
+import "fmt"
 
 type Subscriber interface {
 	HandleBroadcast(key string, content interface{})
@@ -8,28 +8,20 @@ type Subscriber interface {
 
 type Messenger interface {
 	Subscribe(messageKey string, sub Subscriber)
-	Broadcast(messageKey string, content interface{})
+	Broadcast(messageKey string, content interface{}) error
 }
-
-type messenger struct{}
 
 type messageQue struct {
 	messages map[string][]Subscriber
 }
 
-var que messageQue
-
-func init() {
-	que = messageQue{
+func NewMessenger() Messenger {
+	return &messageQue{
 		messages: map[string][]Subscriber{},
 	}
 }
 
-func NewMessenger() Messenger {
-	return &messenger{}
-}
-
-func (mq *messageQue) subscribe(messageKey string, sub Subscriber) {
+func (que *messageQue) Subscribe(messageKey string, sub Subscriber) {
 	if _, ok := que.messages[messageKey]; ok {
 		que.messages[messageKey] = append(que.messages[messageKey], sub)
 		return
@@ -37,20 +29,12 @@ func (mq *messageQue) subscribe(messageKey string, sub Subscriber) {
 	que.messages[messageKey] = []Subscriber{sub}
 }
 
-func (mq *messageQue) broadcast(messageKey string, content interface{}) {
+func (que *messageQue) Broadcast(messageKey string, content interface{}) error {
 	if subscribers, ok := que.messages[messageKey]; ok {
 		for _, sys := range subscribers {
 			sys.HandleBroadcast(messageKey, content)
 		}
-		return
+		return nil
 	}
-	log.Printf("No subscribers to %s", messageKey)
-}
-
-func (m *messenger) Subscribe(messageKey string, sub Subscriber) {
-	que.subscribe(messageKey, sub)
-}
-
-func (m *messenger) Broadcast(messageKey string, content interface{}) {
-	que.broadcast(messageKey, content)
+	return fmt.Errorf("no subscribers to '%s'", messageKey)
 }
