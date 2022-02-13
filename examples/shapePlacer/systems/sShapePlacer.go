@@ -34,23 +34,12 @@ func NewSShapePlacer(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, erro
 		callbacks:       map[string]func(contents interface{}){},
 	}
 	err := sp.AddEntity(es...)
-	sp.callbacks["createShape"] = sp.createShapeCallback
-	m.Subscribe("createShape", sp)
+	sp.initSShapePlacerCallbacks()
 
 	if err != nil {
 		return nil, err
 	}
 	return sp, nil
-}
-
-func (sp *SShapePlacer) createShapeCallback(content interface{}) {
-	vec := content.(pixel.Vec)
-
-	square, err := entities.NewSquare(collision2d.NewVector(vec.X, vec.Y), 0, 100)
-	if err != nil {
-		return
-	}
-	shapeQue = append(shapeQue, square)
 }
 
 // GetComponents returns the nessary components for an entity to be used in this system
@@ -99,4 +88,21 @@ func (sp *SShapePlacer) Tag() string {
 
 func (sp *SShapePlacer) HandleBroadcast(key string, content interface{}) {
 	sp.callbacks[key](content)
+}
+
+func (sp *SShapePlacer) initSShapePlacerCallbacks() {
+	sp.callbacks["lefMoustClicked"] = sp.createShapeCallback
+	for key := range sp.callbacks {
+		sp.m.Subscribe(key, sp)
+	}
+}
+
+func (sp *SShapePlacer) createShapeCallback(content interface{}) {
+	vec := content.(pixel.Vec)
+
+	square, err := entities.NewSquare(collision2d.NewVector(vec.X, vec.Y), 0, 100)
+	if err != nil {
+		return
+	}
+	shapeQue = append(shapeQue, square)
 }

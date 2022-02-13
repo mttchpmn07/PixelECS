@@ -23,7 +23,7 @@ type SRender struct {
 
 // NewSRender constructs a SRender from a varidact list of entities
 func NewSRender(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, error) {
-	br := &SRender{
+	r := &SRender{
 		tag:             SRTAG,
 		controlEntities: []*ecs.Entity{},
 		comps: []string{
@@ -33,36 +33,18 @@ func NewSRender(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, error) {
 		m:         m,
 		callbacks: map[string]func(contents interface{}){},
 	}
-	br.callbacks["addShape"] = br.addShapeCallback
-	br.m.Subscribe("addShape", br)
-	err := br.AddEntity(es...)
+	err := r.AddEntity(es...)
+	r.initSRenderCallbacks()
 
 	if err != nil {
 		return nil, err
 	}
-	return br, nil
-}
-
-func (r *SRender) addShapeCallback(content interface{}) {
-	r.AddEntity(content.(*ecs.Entity))
+	return r, nil
 }
 
 // GetComponents returns the nessary components for an entity to be used in this system
 func (r *SRender) GetComponents() []string {
 	return r.comps
-}
-
-func pixelPoint(point collision2d.Vector) pixel.Vec {
-	return pixel.V(point.X, point.Y)
-}
-
-func renderShape(shape collision2d.Polygon) *imdraw.IMDraw {
-	poly := imdraw.New(nil)
-	for _, p := range shape.Points {
-		poly.Push(pixelPoint(p.Add(shape.Pos).Sub(shape.Offset)))
-	}
-	poly.Polygon(2)
-	return poly
 }
 
 func (r *SRender) Update(args ...interface{}) error {
@@ -115,4 +97,28 @@ func (r *SRender) Tag() string {
 
 func (r *SRender) HandleBroadcast(key string, content interface{}) {
 	r.callbacks[key](content)
+}
+
+func (r *SRender) addShapeCallback(content interface{}) {
+	r.AddEntity(content.(*ecs.Entity))
+}
+
+func (r *SRender) initSRenderCallbacks() {
+	r.callbacks["addShape"] = r.addShapeCallback
+	for key := range r.callbacks {
+		r.m.Subscribe(key, r)
+	}
+}
+
+func pixelPoint(point collision2d.Vector) pixel.Vec {
+	return pixel.V(point.X, point.Y)
+}
+
+func renderShape(shape collision2d.Polygon) *imdraw.IMDraw {
+	poly := imdraw.New(nil)
+	for _, p := range shape.Points {
+		poly.Push(pixelPoint(p.Add(shape.Pos).Sub(shape.Offset)))
+	}
+	poly.Polygon(2)
+	return poly
 }

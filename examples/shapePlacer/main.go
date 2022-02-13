@@ -9,6 +9,7 @@ import (
 	"github.com/faiface/pixel/pixelgl"
 	"golang.org/x/image/colornames"
 
+	"github.com/mttchpmn07/PixelECS/shapePlacer/entities"
 	"github.com/mttchpmn07/PixelECS/shapePlacer/systems"
 
 	ecs "github.com/mttchpmn07/PixelECS/core"
@@ -38,6 +39,22 @@ func buildSystems() {
 	// Create messenger
 	m := messenger.NewMessenger()
 
+	// Camera entity
+	camera, err := entities.NewCamera(pixel.ZV, 500.0, 1.0, 1.2)
+	if err != nil {
+		panic(err)
+	}
+
+	// Camera system
+	cameraSystem, err := systems.NewSCamera(m, camera)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(cameraSystem)
+	if err != nil {
+		panic(err)
+	}
+
 	// Batch renderer system
 	renderSystem, err := systems.NewSRender(m)
 	if err != nil {
@@ -57,12 +74,22 @@ func buildSystems() {
 		panic(err)
 	}
 
-	// User Control System
-	controlSystem, err := systems.NewSUsuerControl(m)
+	// Mouse Input System
+	mouseSystem, err := systems.NewSMouseInput(m, camera)
 	if err != nil {
 		panic(err)
 	}
-	err = ecs.RegisterSystem(controlSystem)
+	err = ecs.RegisterSystem(mouseSystem)
+	if err != nil {
+		panic(err)
+	}
+
+	// Keyboard Input System
+	keybaordSystem, err := systems.NewSKeybaordInput(m)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(keybaordSystem)
 	if err != nil {
 		panic(err)
 	}

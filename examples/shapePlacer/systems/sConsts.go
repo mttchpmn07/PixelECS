@@ -2,6 +2,8 @@ package systems
 
 const (
 	SRTAG = "render sys"
-	UCTAG = "user control"
+	MITAG = "mouse input"
+	KITAG = "keybaord input"
 	SPTAG = "shape placer"
+	CTAG  = "camera sys"
 )

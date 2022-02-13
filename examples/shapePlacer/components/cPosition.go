@@ -1,5 +1,6 @@
 package components
 
+/*
 import (
 	"github.com/Tarliton/collision2d"
 	ecs "github.com/mttchpmn07/PixelECS/core"
@@ -33,3 +34,4 @@ func GetCPosition(e *ecs.Entity) (*CPosition, error) {
 	}
 	return comp.(*CPosition), nil
 }
+*/
