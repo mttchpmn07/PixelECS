@@ -55,31 +55,22 @@ func buildSystems() {
 		panic(err)
 	}
 
+	// User Input System
+	userInputSystem, err := systems.NewSUserInput(m, camera)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(userInputSystem)
+	if err != nil {
+		panic(err)
+	}
+
+	// Shape Placer System
 	shapePlacerSystem, err := systems.NewSShapePlacer(m)
 	if err != nil {
 		panic(err)
 	}
 	err = ecs.RegisterSystem(shapePlacerSystem)
-	if err != nil {
-		panic(err)
-	}
-
-	// Mouse Input System
-	mouseSystem, err := systems.NewSMouseInput(m, camera)
-	if err != nil {
-		panic(err)
-	}
-	err = ecs.RegisterSystem(mouseSystem)
-	if err != nil {
-		panic(err)
-	}
-
-	// Keyboard Input System
-	keybaordSystem, err := systems.NewSKeybaordInput(m)
-	if err != nil {
-		panic(err)
-	}
-	err = ecs.RegisterSystem(keybaordSystem)
 	if err != nil {
 		panic(err)
 	}
