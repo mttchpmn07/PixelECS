@@ -6,4 +6,5 @@ const (
 	KITAG = "keybaord input"
 	SPTAG = "shape placer"
 	CTAG  = "camera sys"
+	CLTAG = "collision sys"
 )

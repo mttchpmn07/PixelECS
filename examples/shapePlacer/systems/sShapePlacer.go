@@ -16,8 +16,9 @@ type SShapePlacer struct {
 	comps           []string
 	m               messenger.Messenger
 
-	shapeQue  *[]*ecs.Entity
-	callbacks map[string]func(contents interface{})
+	shapeQue    *[]*ecs.Entity
+	callbacks   map[string]func(contents interface{})
+	ClearShapes bool
 }
 
 var shapeQue []*ecs.Entity
@@ -32,6 +33,7 @@ func NewSShapePlacer(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, erro
 		m:               m,
 		shapeQue:        &shapeQue,
 		callbacks:       map[string]func(contents interface{}){},
+		ClearShapes:     false,
 	}
 	err := sp.AddEntity(es...)
 	sp.initSShapePlacerCallbacks()
@@ -50,6 +52,11 @@ func (sp *SShapePlacer) GetComponents() []string {
 func (sp *SShapePlacer) Update(args ...interface{}) error {
 	//win := args[0].(*pixelgl.Window)
 	//dt := (*args[1].(*float64))
+
+	if sp.ClearShapes {
+		sp.ClearShapes = false
+		sp.m.Broadcast("clearShapes", nil)
+	}
 
 	for _, s := range shapeQue {
 		sp.m.Broadcast("addShape", s)
@@ -94,6 +101,7 @@ func (sp *SShapePlacer) initSShapePlacerCallbacks() {
 	sp.callbacks["leftMoustClicked"] = sp.createSquare
 	sp.callbacks["rightMoustClicked"] = sp.createTriangle
 	sp.callbacks["middleMouseClicked"] = sp.createCircle
+	sp.callbacks["spaceKeyPressed"] = sp.clearShapes
 	for key := range sp.callbacks {
 		sp.m.Subscribe(key, sp)
 	}
@@ -127,4 +135,8 @@ func (sp *SShapePlacer) createCircle(content interface{}) {
 		return
 	}
 	shapeQue = append(shapeQue, circle)
+}
+
+func (sp *SShapePlacer) clearShapes(content interface{}) {
+	sp.ClearShapes = true
 }

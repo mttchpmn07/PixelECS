@@ -76,6 +76,16 @@ func buildSystems() {
 	}
 
 	// Batch renderer system
+	collisionSystem, err := systems.NewSCollision(m)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(collisionSystem)
+	if err != nil {
+		panic(err)
+	}
+
+	// Batch renderer system
 	renderSystem, err := systems.NewSRender(m)
 	if err != nil {
 		panic(err)
@@ -115,6 +125,7 @@ func run() {
 		if err != nil {
 			panic(err)
 		}
+
 		win.Update()
 
 		updateFPS(win, title, frames, second)

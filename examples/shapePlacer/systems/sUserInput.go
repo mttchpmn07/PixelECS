@@ -71,6 +71,12 @@ func (ui *SUserInput) Update(args ...interface{}) error {
 			log.Println(err)
 		}
 	}
+	if win.JustPressed(pixelgl.KeySpace) {
+		err := ui.m.Broadcast("spaceKeyPressed", nil)
+		if err != nil {
+			log.Println(err)
+		}
+	}
 	if win.Pressed(pixelgl.KeyW) || win.Pressed(pixelgl.KeyUp) {
 		err := ui.m.Broadcast("upKeyPressed", nil)
 		if err != nil {

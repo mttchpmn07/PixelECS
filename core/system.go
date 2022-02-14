@@ -90,6 +90,9 @@ func GetSystem(tag string) (System, error) {
 
 // StripEntity helper function that removes a *Entity from a []*Entity and returns the new list
 func StripEntity(ce []*Entity, e *Entity) ([]*Entity, error) {
+	if e == nil {
+		return ce, fmt.Errorf("entity invalid")
+	}
 	idx := -1
 	for i, ent := range ce {
 		if ent == e {
@@ -98,7 +101,7 @@ func StripEntity(ce []*Entity, e *Entity) ([]*Entity, error) {
 		}
 	}
 	if idx == -1 {
-		return []*Entity{}, fmt.Errorf("entity %v not found", e.ID)
+		return ce, fmt.Errorf("entity %v not found", e.ID)
 	}
 	l := len(ce)
 	ce[idx] = ce[l-1]

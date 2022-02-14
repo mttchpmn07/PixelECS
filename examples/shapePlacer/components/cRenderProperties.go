@@ -1,6 +1,8 @@
 package components
 
 import (
+	"image/color"
+
 	ecs "github.com/mttchpmn07/PixelECS/core"
 )
 
@@ -8,6 +10,7 @@ type CRenderProperties struct {
 	tag string
 
 	Active bool
+	Color  color.Color
 }
 
 func (rp *CRenderProperties) String() string {
@@ -22,6 +25,7 @@ func NewCRenderProperties(active bool) ecs.Component {
 	return &CRenderProperties{
 		tag:    RPTAG,
 		Active: active,
+		Color:  color.White,
 	}
 }
 

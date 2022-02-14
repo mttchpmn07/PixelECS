@@ -1,6 +1,8 @@
 package systems
 
 import (
+	"image/color"
+
 	"github.com/Tarliton/collision2d"
 	"github.com/faiface/pixel"
 	"github.com/faiface/pixel/imdraw"
@@ -65,7 +67,7 @@ func (r *SRender) Update(args ...interface{}) error {
 		if !s.Draw {
 			continue
 		}
-		shape := renderCollisionShape(s)
+		shape := renderCollisionShape(s, rp.Color)
 		shape.Draw(win)
 	}
 	return nil
@@ -102,12 +104,19 @@ func (r *SRender) HandleBroadcast(key string, content interface{}) {
 	r.callbacks[key](content)
 }
 
-func (r *SRender) addShapeCallback(content interface{}) {
+func (r *SRender) addShape(content interface{}) {
 	r.AddEntity(content.(*ecs.Entity))
 }
 
+func (r *SRender) clearShapes(content interface{}) {
+	for len(r.controlEntities) > 0 {
+		r.RemoveEntity(r.controlEntities[0])
+	}
+}
+
 func (r *SRender) initSRenderCallbacks() {
-	r.callbacks["addShape"] = r.addShapeCallback
+	r.callbacks["addShape"] = r.addShape
+	r.callbacks["clearShapes"] = r.clearShapes
 	for key := range r.callbacks {
 		r.m.Subscribe(key, r)
 	}
@@ -117,8 +126,9 @@ func pixelPoint(point collision2d.Vector) pixel.Vec {
 	return pixel.V(point.X, point.Y)
 }
 
-func renderCollisionShape(shape *components.CCollisionShape) *imdraw.IMDraw {
+func renderCollisionShape(shape *components.CCollisionShape, Color color.Color) *imdraw.IMDraw {
 	draw := imdraw.New(nil)
+	draw.SetColorMask(Color)
 	switch shape.Type {
 	case "polygon":
 		s := shape.Shape.(collision2d.Polygon)
