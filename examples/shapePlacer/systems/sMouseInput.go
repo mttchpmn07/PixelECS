@@ -31,6 +31,8 @@ func NewSMouseInput(m messenger.Messenger, es ...*ecs.Entity) (ecs.System, error
 		callbacks:       map[string]func(contents interface{}){},
 		keys: []pixelgl.Button{
 			pixelgl.MouseButton1,
+			pixelgl.MouseButton2,
+			pixelgl.MouseButton3,
 		},
 		keyBools: map[pixelgl.Button]bool{},
 	}
@@ -61,7 +63,19 @@ func (mi *SMouseInput) Update(args ...interface{}) error {
 			return err
 		}
 		if mi.keyBools[pixelgl.MouseButton1] {
-			err := mi.m.Broadcast("lefMoustClicked", cam.Translation.Unproject(win.MousePosition()))
+			err := mi.m.Broadcast("leftMoustClicked", cam.Translation.Unproject(win.MousePosition()))
+			if err != nil {
+				log.Println(err)
+			}
+		}
+		if mi.keyBools[pixelgl.MouseButton2] {
+			err := mi.m.Broadcast("rightMoustClicked", cam.Translation.Unproject(win.MousePosition()))
+			if err != nil {
+				log.Println(err)
+			}
+		}
+		if mi.keyBools[pixelgl.MouseButton3] {
+			err := mi.m.Broadcast("middleMouseClicked", cam.Translation.Unproject(win.MousePosition()))
 			if err != nil {
 				log.Println(err)
 			}

@@ -58,12 +58,15 @@ func (r *SRender) Update(args ...interface{}) error {
 		if !rp.Active {
 			continue
 		}
-		s, err := components.GetCShape(e)
+		s, err := components.GetCollisionShape(e)
 		if err != nil {
 			return err
 		}
-		poly := renderShape(s.Shape)
-		poly.Draw(win)
+		if !s.Draw {
+			continue
+		}
+		shape := renderCollisionShape(s)
+		shape.Draw(win)
 	}
 	return nil
 }
@@ -114,11 +117,19 @@ func pixelPoint(point collision2d.Vector) pixel.Vec {
 	return pixel.V(point.X, point.Y)
 }
 
-func renderShape(shape collision2d.Polygon) *imdraw.IMDraw {
-	poly := imdraw.New(nil)
-	for _, p := range shape.Points {
-		poly.Push(pixelPoint(p.Add(shape.Pos).Sub(shape.Offset)))
+func renderCollisionShape(shape *components.CCollisionShape) *imdraw.IMDraw {
+	draw := imdraw.New(nil)
+	switch shape.Type {
+	case "polygon":
+		s := shape.Shape.(collision2d.Polygon)
+		for _, p := range s.Points {
+			draw.Push(pixelPoint(p.Add(s.Pos).Sub(s.Offset)))
+		}
+		draw.Polygon(2)
+	case "circle":
+		s := shape.Shape.(collision2d.Circle)
+		draw.Push(pixelPoint(s.Pos))
+		draw.Circle(s.R, 2)
 	}
-	poly.Polygon(2)
-	return poly
+	return draw
 }

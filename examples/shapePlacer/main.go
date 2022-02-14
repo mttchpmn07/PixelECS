@@ -55,16 +55,6 @@ func buildSystems() {
 		panic(err)
 	}
 
-	// Batch renderer system
-	renderSystem, err := systems.NewSRender(m)
-	if err != nil {
-		panic(err)
-	}
-	err = ecs.RegisterSystem(renderSystem)
-	if err != nil {
-		panic(err)
-	}
-
 	shapePlacerSystem, err := systems.NewSShapePlacer(m)
 	if err != nil {
 		panic(err)
@@ -90,6 +80,16 @@ func buildSystems() {
 		panic(err)
 	}
 	err = ecs.RegisterSystem(keybaordSystem)
+	if err != nil {
+		panic(err)
+	}
+
+	// Batch renderer system
+	renderSystem, err := systems.NewSRender(m)
+	if err != nil {
+		panic(err)
+	}
+	err = ecs.RegisterSystem(renderSystem)
 	if err != nil {
 		panic(err)
 	}

@@ -91,13 +91,15 @@ func (sp *SShapePlacer) HandleBroadcast(key string, content interface{}) {
 }
 
 func (sp *SShapePlacer) initSShapePlacerCallbacks() {
-	sp.callbacks["lefMoustClicked"] = sp.createShapeCallback
+	sp.callbacks["leftMoustClicked"] = sp.createSquare
+	sp.callbacks["rightMoustClicked"] = sp.createTriangle
+	sp.callbacks["middleMouseClicked"] = sp.createCircle
 	for key := range sp.callbacks {
 		sp.m.Subscribe(key, sp)
 	}
 }
 
-func (sp *SShapePlacer) createShapeCallback(content interface{}) {
+func (sp *SShapePlacer) createSquare(content interface{}) {
 	vec := content.(pixel.Vec)
 
 	square, err := entities.NewSquare(collision2d.NewVector(vec.X, vec.Y), 0, 100)
@@ -105,4 +107,24 @@ func (sp *SShapePlacer) createShapeCallback(content interface{}) {
 		return
 	}
 	shapeQue = append(shapeQue, square)
+}
+
+func (sp *SShapePlacer) createTriangle(content interface{}) {
+	vec := content.(pixel.Vec)
+
+	triangle, err := entities.NewTriangle(collision2d.NewVector(vec.X, vec.Y), 0, 100)
+	if err != nil {
+		return
+	}
+	shapeQue = append(shapeQue, triangle)
+}
+
+func (sp *SShapePlacer) createCircle(content interface{}) {
+	vec := content.(pixel.Vec)
+
+	circle, err := entities.NewCircle(collision2d.NewVector(vec.X, vec.Y), 50)
+	if err != nil {
+		return
+	}
+	shapeQue = append(shapeQue, circle)
 }
